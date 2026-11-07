@@ -199,6 +199,47 @@ nlb_test_assert($code === 0, 'шаг 007 с --set-template: exit 0');
 nlb_test_assert(str_contains($output, 'привязан'), 'шаблон привязан к сайту');
 
 /* ------------------------------------------------------------------ */
+/* 4b. Повторный 002 снимает обязательность CODE/XML_ID со старой БД  */
+/* ------------------------------------------------------------------ */
+
+$statePath = $temp . '/state.json';
+$state = json_decode((string)file_get_contents($statePath), true);
+$formIds = [];
+foreach ((array)($state['iblocks'] ?? []) as $id => $iblock) {
+    $code = (string)($iblock['CODE'] ?? '');
+    if (!in_array($code, ['requests', 'bookings', 'orders'], true)) {
+        continue;
+    }
+    $formIds[$code] = (int)$id;
+    foreach (['CODE', 'XML_ID'] as $field) {
+        $state['iblocks'][$id]['FIELDS'][$field]['IS_REQUIRED'] = 'Y';
+    }
+}
+nlb_test_assert(count($formIds) === 3, 'состояние «старой» базы: три инфоблока форм');
+file_put_contents($statePath, json_encode($state, JSON_UNESCAPED_UNICODE));
+
+[$output, $code] = nlb_test_run($temp . '/db/run.php', ['--only=002'], $temp);
+nlb_test_assert($code === 0, 'повтор 002 на «старой» базе: exit 0');
+
+$state = json_decode((string)file_get_contents($statePath), true);
+foreach ($formIds as $formCode => $id) {
+    foreach (['CODE', 'XML_ID'] as $field) {
+        nlb_test_assert(
+            (string)($state['iblocks'][$id]['FIELDS'][$field]['IS_REQUIRED'] ?? '') === 'N',
+            'повтор 002 снимает обязательность ' . $formCode . '.' . $field
+        );
+    }
+}
+foreach ((array)($state['iblocks'] ?? []) as $iblock) {
+    if ((string)($iblock['CODE'] ?? '') === 'news') {
+        nlb_test_assert(
+            (string)($iblock['FIELDS']['CODE']['IS_REQUIRED'] ?? '') === 'Y',
+            'повтор 002 не трогает обязательный CODE у новостей'
+        );
+    }
+}
+
+/* ------------------------------------------------------------------ */
 /* 5. Проверка базы                                                   */
 /* ------------------------------------------------------------------ */
 
@@ -206,6 +247,16 @@ nlb_test_assert(str_contains($output, 'привязан'), 'шаблон при�
 nlb_test_assert($code === 0, 'check.php после миграций: exit 0');
 if ($code !== 0) {
     echo "\n--- вывод check.php ---\n{$output}\n";
+}
+
+/* ------------------------------------------------------------------ */
+/* 5b. Почтовые события: фильтр CEventType::GetList                   */
+/* ------------------------------------------------------------------ */
+
+[$output, $code] = nlb_test_run($temp . '/db/tests/mail.php', [], $temp);
+nlb_test_assert($code === 0, 'mail.php: типы и шаблоны писем создаются по фильтру');
+if ($code !== 0) {
+    echo "\n--- вывод mail.php ---\n{$output}\n";
 }
 
 /* ------------------------------------------------------------------ */

@@ -136,6 +136,22 @@ if (!is_array($bookDocument)) {
     }
 }
 
+/* 002: у инфоблоков форм CODE и XML_ID не обязательны — иначе добавление
+   падает на проверке обязательных полей раньше OnBeforeIBlockElementAdd. */
+foreach (['requests', 'bookings', 'orders'] as $formCode) {
+    $formIblockId = nlb_iblock_id($formCode);
+    $formFields = NlbStubStore::$iblocks[$formIblockId]['FIELDS'] ?? [];
+    foreach (['CODE', 'XML_ID'] as $fieldCode) {
+        if ((string)($formFields[$fieldCode]['IS_REQUIRED'] ?? '') !== 'N') {
+            $errors[] = 'инфоблок ' . $formCode . ': поле ' . $fieldCode . ' осталось обязательным';
+        }
+    }
+}
+$newsFields = NlbStubStore::$iblocks[$newsIblock]['FIELDS'] ?? [];
+if ((string)($newsFields['CODE']['IS_REQUIRED'] ?? '') !== 'Y') {
+    $errors[] = 'новости: CODE должен остаться обязательным';
+}
+
 if ($errors) {
     echo "Ошибки inspect:\n";
     foreach ($errors as $error) {

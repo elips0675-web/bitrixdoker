@@ -206,3 +206,60 @@
     cron/crond, .env отсутствует, healthcheck только у db, в compose нет
     logging, b_lang.SERVER_NAME = NULL, nlb_push_keys.php отсутствует,
     upload/tmp ≈0,1 МБ, db/logs ≈22 КБ.
+
+[07.11.2026] Пересборка из git
+  - Причина: девять правок жили только в www/ (P0-9). Репозиторий
+    D:\nlbbootstrap-main отставал, и work/overlay-project.ps1 затёр бы их при
+    следующем развёртывании. Порядок был обратный эталону: стенд → шаблон.
+  - Правки перенесены в шаблон и запушены: коммит c7ed4b3 в origin/main
+    (https://github.com/elips0675-web/nlbbootstrap). В коммите 28 файлов:
+    urlrewrite.php (query-string в шести detail-правилах), GROUPS => [2]
+    в feedback/index.php, services/detail.php, books/detail.php,
+    PROPERTY[NAME][0] и nlb_site_id() в nlb_forms.php, Loader::includeModule
+    ('iblock') в init.php, method_exists в шаблоне крошек, nlb_iblock_relax_code()
+    в db/lib/helpers.php и 002_iblocks.php, фильтр первым аргументом
+    в CEventType::GetList (008 и 012), тест db/tests/mail.php.
+  - Миграция 002 сделана самовосстанавливающейся: вызов
+    nlb_iblock_relax_code() стоит и в ветке «инфоблок уже есть», поэтому
+    повторный прогон чинит старую базу. Ручной work/stand-fixes.sql больше
+    не нужен. work/mail-events.php тоже исторический обход: типы и шаблоны
+    писем создают сами 008 и 012. Оба файла оставлены в work/ как справка
+    по старой базе, в README помечены историческими.
+  - Шаблон проверен до пересборки: php -l — 98 файлов вне preview/, 0 ошибок;
+    db/lint.php — 0; db/tests/run.php — 37 из 37 (в том числе шаг 4b:
+    «старая» база с IS_REQUIRED=Y → повтор 002 возвращает N, обязательный
+    CODE новостей не трогает; шаг 5b: mail.php); check-template.mjs,
+    check-docs.mjs — 0; check-doc-numbers.mjs — 73 утверждения в 15 файлах;
+    check-doc-refs.mjs — 262 ссылки в 20 документах; filter-selftest — 105,
+    check-filter-parity — 95 фраз, search-selftest — 116,
+    build-search-index --check — индекс соответствует источникам.
+  - Стенд пересобран из git: work/overlay-project.ps1, sha256 восьми ключевых
+    файлов repo ↔ www совпадают (urlrewrite.php, init.php, nlb_forms.php,
+    feedback/index.php, services/detail.php, books/detail.php, шаблон крошек,
+    db/tests/mail.php).
+  - Проверено на живой базе:
+    * повторный 002: у requests/bookings/orders CODE и XML_ID стали N
+      (до прогона вручную выставлены Y), обязательный CODE новостей остался Y;
+    * после удаления NLB-событий 008 и 012 создали три типа
+      (NLB_NEW_REQUEST, NLB_NEW_BOOKING, NLB_BOOKING_CLIENT) и три шаблона
+      на сайте s1;
+    * db/check.php — OK, структура и демо-контент совпадают с db/config;
+    * три формы отправлены гостем с реальной капчей (код брался из b_captcha):
+      /feedback/ → 302, элемент 99 с CODE=request-20261107083535-779be0;
+      /services/observation-deck/ → 302, бронь 100 с CODE=booking-…
+      (дата 2026-11-20, 10:00, свойства в b_iblock_element_prop_s8);
+      /books/aromatizator-v-mashinu-kniga/ → 302, заказ 101 с CODE=order-…;
+      XML_ID равен CODE во всех трёх случаях;
+    * ?sent=1 на всех трёх адресах отдаёт 200 и текст успеха, а не 404;
+    * в b_event появились NLB_NEW_REQUEST, NLB_NEW_BOOKING,
+      NLB_BOOKING_CLIENT с SUCCESS_EXEC = F (SMTP не настроен, P0-1).
+  - После проверки тестовые элементы 99–101 удалены через
+    CIBlockElement::Delete (свойства s7/s8/s9 подчищены), записи b_event
+    удалены, счётчики 0/0/0, db/check.php снова OK. Временные файлы
+    в work/ (cookies, html, тела POST) удалены; служебный
+    www/db/_cleanup.php удалён.
+  - README.md: раздел «Состояние» и шаги 5–6 переписаны под развёртывание
+    из git без ручных обходов. Что доделать.txt: P0-9 удалён целиком.
+  - Не проверено: доставка письма на реальный ящик (нет SMTP, P0-1);
+    cron и агенты (P0-2); поведение на чистой установке с нуля — проверен
+    повторный прогон на существующей базе, а не полный мастер установки.

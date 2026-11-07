@@ -62,7 +62,9 @@ return static function (): array {
 
     foreach ($events as $eventName => $definition) {
         $typeExists = false;
-        $typeRes = CEventType::GetList([], [
+        // CEventType::GetList принимает фильтр первым аргументом: со вторым
+        // он игнорируется и возвращает первую строку b_event_type.
+        $typeRes = CEventType::GetList([
             'EVENT_NAME' => $eventName,
             'LID' => 'ru',
         ]);

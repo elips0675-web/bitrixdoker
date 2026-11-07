@@ -111,6 +111,34 @@ if (!function_exists('nlb_iblock_type_exists')) {
     }
 }
 
+if (!function_exists('nlb_iblock_relax_code')) {
+    /**
+     * Снимает обязательность CODE и XML_ID у инфоблока формы.
+     *
+     * CIBlock::SetFields() этого не может: в его GetFieldsDefaults() у XML_ID
+     * IS_REQUIRED = 'Y', и значение из $arFields игнорируется. Публичные формы
+     * код не передают — он генерируется в OnBeforeIBlockElementAdd
+     * (local/php_interface/include/nlb_forms.php), но проверка обязательных
+     * полей идёт раньше события, поэтому нужен UPDATE b_iblock_fields.
+     */
+    function nlb_iblock_relax_code(int $iblockId): void
+    {
+        global $DB;
+        $iblockId = (int)$iblockId;
+        if ($iblockId <= 0 || !is_object($DB)) {
+            return;
+        }
+        $DB->Query(
+            "UPDATE b_iblock_fields SET IS_REQUIRED = 'N' "
+            . 'WHERE IBLOCK_ID = ' . $iblockId
+            . " AND FIELD_ID IN ('CODE', 'XML_ID')"
+        );
+        if (method_exists('CIBlock', 'CleanCache')) {
+            CIBlock::CleanCache($iblockId);
+        }
+    }
+}
+
 if (!function_exists('nlb_property')) {
     /**
      * Строка свойства инфоблока: ID, CODE, PROPERTY_TYPE, MULTIPLE, USER_TYPE.

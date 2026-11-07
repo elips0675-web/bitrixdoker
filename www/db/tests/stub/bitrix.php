@@ -201,6 +201,7 @@ class CIBlock
             'SECTION_PAGE_URL' => $fields['SECTION_PAGE_URL'] ?? '',
             'INDEX_ELEMENT' => $fields['INDEX_ELEMENT'] ?? 'Y',
             'INDEX_SECTION' => $fields['INDEX_SECTION'] ?? 'Y',
+            'FIELDS' => is_array($fields['FIELDS'] ?? null) ? $fields['FIELDS'] : [],
         ];
         NlbStubStore::$sequences[$id] = 0;
         return $id;
@@ -790,3 +791,27 @@ function nlb_stub_save(): void
 
 nlb_stub_load();
 register_shutdown_function('nlb_stub_save');
+
+/**
+ * Заглушка CDatabase: поддерживает только UPDATE миграций по b_iblock_fields.
+ * Неизвестный SQL — исключение, а не тихий пропуск.
+ */
+final class NlbStubDatabase
+{
+    public function Query(string $sql)
+    {
+        $pattern = '/^UPDATE b_iblock_fields SET IS_REQUIRED = \'N\' WHERE IBLOCK_ID = (\d+) AND FIELD_ID IN \(\'CODE\', \'XML_ID\'\)$/';
+        if (!preg_match($pattern, $sql, $matches)) {
+            throw new RuntimeException('NLB stub: неизвестный SQL: ' . $sql);
+        }
+        $id = (int)$matches[1];
+        if (isset(NlbStubStore::$iblocks[$id])) {
+            foreach (['CODE', 'XML_ID'] as $field) {
+                NlbStubStore::$iblocks[$id]['FIELDS'][$field]['IS_REQUIRED'] = 'N';
+            }
+        }
+        return new NlbStubResult([]);
+    }
+}
+
+$GLOBALS['DB'] = new NlbStubDatabase();

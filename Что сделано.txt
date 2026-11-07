@@ -219,6 +219,9 @@
     ('iblock') в init.php, method_exists в шаблоне крошек, nlb_iblock_relax_code()
     в db/lib/helpers.php и 002_iblocks.php, фильтр первым аргументом
     в CEventType::GetList (008 и 012), тест db/tests/mail.php.
+    Следом коммит b1b843e: вызов nlb_iblock_relax_code() добавлен и в ветку
+    «инфоблок уже есть», шаг 4b в db/tests/run.php проверяет починку старой
+    базы, числа в документации подняты до 37 проверок и 20 354 строк.
   - Миграция 002 сделана самовосстанавливающейся: вызов
     nlb_iblock_relax_code() стоит и в ветке «инфоблок уже есть», поэтому
     повторный прогон чинит старую базу. Ручной work/stand-fixes.sql больше

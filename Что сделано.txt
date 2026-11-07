@@ -166,3 +166,20 @@
     мастера (stages/); 318-МБ архив дистрибутива и HTML-дампы удалены.
   - Добавлен .htaccess в local/php_interface — единственная новая правка
     инфраструктуры после наложения проекта.
+
+[07.11.2026] Публикация на GitHub
+  - Репозиторий: https://github.com/elips0675-web/bitrixdoker
+  - Ветка main, коммит 111bfc4, 615 файлов, ~23.7 МБ (без ядра Битрикса).
+  - Вошло: docker-compose.yml, php/ (Dockerfile, php.ini, apache.conf),
+    README.md, этот журнал, проектный код www/ (страницы, local/, db/, tools/,
+    menu/, preview/), картинки демо-контента www/upload/iblock/, work/
+    (скрипты автоматизации, stages.log, stand-fixes.sql).
+  - Исключено (.gitignore): www/bitrix/ (ядро, ~1.03 ГБ, лицензионный продукт
+    1С-Битрикс), www/upload/main и www/upload/tmp (системные иконки/смайлы и
+    temp установщика), www/db/logs/, log/, work/stages/, work/bitrixsetup.php,
+    *.log, *.tar.gz, *.zip, .env.
+  - Восстановление стенда с нуля описано в README.md, раздел «Восстановить
+    стенд с нуля»; work/stand-fixes.sql фиксирует правку b_iblock_fields
+    (снятие IS_REQUIRED у CODE/XML_ID для requests/bookings/orders).
+  - Учётки в README/журнале (admin / Bitrix!2026, MySQL bitrix/bitrix_pass) —
+    демонстрационные, для публичного стенда их нужно менять.

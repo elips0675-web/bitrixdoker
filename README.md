@@ -70,16 +70,17 @@ docker compose down               # остановить (данные БД в �
    в `php/Dockerfile` он уже установлен.
 2. `docker compose up -d --build`, открыть http://localhost:8080/ и пройти мастер
    (БД: `db`, `bitrix`, `bitrix` / `bitrix_pass`), создать администратора.
-3. Наложить файлы проекта: скрипт `work/overlay-project.ps1` копирует страницы,
-   `local/`, `db/`, `tools/`, `menu/` из исходного репозитория, не перезаписывая
+3. Наложить файлы проекта: из репозитория шаблона запустить
+   `tools\overlay-project.ps1 -Destination "D:\bitrix doker\www"` — он копирует
+   страницы, `local/`, `db/`, `tools/`, `preview/` и не перезаписывает
    `bitrix/`, `upload/`, `.settings.php`, `dbconn.php`.
-4. Выполнить миграции по одной (общий прогон падает на 003 из-за кеша нулевого
-   ID инфоблока):
+4. Выполнить миграции одной командой и привязать шаблон к сайту:
    ```bash
-   docker compose exec -T -u www-data web php /var/www/html/db/run.php --only=003
-   # ... 004 ... 012
+   docker compose exec -T -u www-data web php /var/www/html/db/run.php
    docker compose exec -T -u www-data web php /var/www/html/db/run.php --only=007 --set-template
    ```
+   Повторный запуск безопасен: существующие объекты пропускаются. Шаг `007`
+   без `--set-template` пропускается — он меняет настройки сайта.
 5. Почтовые события создают сами миграции `008` и `012`: `CEventType::GetList()`
    получает фильтр первым аргументом, поэтому `NLB_NEW_REQUEST`,
    `NLB_NEW_BOOKING` и `NLB_BOOKING_CLIENT` появляются на чистой базе.
@@ -95,6 +96,7 @@ docker compose down               # остановить (данные БД в �
 
 - CLI запускать от `www-data`: `docker compose exec -T -u www-data web php <файл>`
   (от root портятся права `db/logs` и `upload`).
-- Повторные миграции — по одной: `php db/run.php --only=003` и т.д.
+- Повторные миграции — той же командой: `php db/run.php`; один шаг —
+  `php db/run.php --only=003`.
 - Прямой HTTP-доступ к `www/local/php_interface/` закрыт `.htaccess`;
   `/db/` и `/tools/` отдают 403 штатными `.htaccess` проекта.

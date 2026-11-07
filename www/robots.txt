@@ -1,0 +1,21 @@
+# robots.txt — Библиотека 2026 (шаблон nlb_bootstrap)
+#
+# Домен в директиве Sitemap замените на рабочий: файл статический,
+# иначе поисковики будут тянуть карту с чужого адреса.
+
+User-agent: *
+Allow: /
+Disallow: /bitrix/
+Disallow: /db/
+Disallow: /tools/
+Disallow: /search/
+Disallow: /auth/
+Disallow: /personal/
+Disallow: /*?section=
+Disallow: /*?past=
+Disallow: /*?PAGEN
+
+# Яндекс: параметры фильтров не создают новых страниц
+Clean-param: section&past&PAGEN_1 /
+
+Sitemap: https://example.by/sitemap.xml

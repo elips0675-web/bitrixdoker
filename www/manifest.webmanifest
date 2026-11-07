@@ -1,0 +1,80 @@
+{
+  "id": "/",
+  "name": "Библиотека 2026 — центр знаний",
+  "short_name": "Библиотека",
+  "description": "Каталог книг, афиша событий, услуги и печатный каталог библиотеки.",
+  "lang": "ru",
+  "dir": "ltr",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0b1220",
+  "categories": ["education", "books", "reference"],
+  "icons": [
+    {
+      "src": "local/templates/nlb_bootstrap/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "local/templates/nlb_bootstrap/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "local/templates/nlb_bootstrap/assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "local/templates/nlb_bootstrap/assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Каталог книг",
+      "short_name": "Каталог",
+      "url": "/books/",
+      "icons": [
+        {
+          "src": "local/templates/nlb_bootstrap/assets/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Афиша событий",
+      "short_name": "Афиша",
+      "url": "/events/",
+      "icons": [
+        {
+          "src": "local/templates/nlb_bootstrap/assets/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Каталог печатных услуг",
+      "short_name": "Печать",
+      "url": "/printing/",
+      "icons": [
+        {
+          "src": "local/templates/nlb_bootstrap/assets/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

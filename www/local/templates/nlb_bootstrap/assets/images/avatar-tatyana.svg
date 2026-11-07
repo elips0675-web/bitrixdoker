@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Татьяна Петровна, ИИ-помощник библиотеки">
+    <defs>
+        <linearGradient id="nlbAvaBg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#eef4ff"/>
+            <stop offset="1" stop-color="#cfdcf8"/>
+        </linearGradient>
+        <linearGradient id="nlbAvaHair" x1="0.2" y1="0" x2="0.9" y2="1">
+            <stop offset="0" stop-color="#f8e0a0"/>
+            <stop offset="0.55" stop-color="#ebc46b"/>
+            <stop offset="1" stop-color="#d3a84c"/>
+        </linearGradient>
+        <linearGradient id="nlbAvaJacket" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#33445f"/>
+            <stop offset="1" stop-color="#22304a"/>
+        </linearGradient>
+        <clipPath id="nlbAvaClip">
+            <circle cx="48" cy="48" r="48"/>
+        </clipPath>
+    </defs>
+    <g clip-path="url(#nlbAvaClip)">
+        <rect width="96" height="96" fill="url(#nlbAvaBg)"/>
+        <path d="M48 11c-14 0-24 9.8-24 25.2 0 5.2.9 9.9 2.1 14.4l-4.6 31c-1 6.6 2.6 10.4 8.2 10.4h36.6c5.6 0 9.2-3.8 8.2-10.4l-4.6-31c1.2-4.5 2.1-9.2 2.1-14.4C72 20.8 62 11 48 11z" fill="url(#nlbAvaHair)"/>
+        <path d="M40.5 57.5h15v13.2c0 3.4-3.4 5.6-7.5 5.6s-7.5-2.2-7.5-5.6z" fill="#e9bd9d"/>
+        <path d="M48 65.5c-15 0-26.8 9.4-28.8 30.5h57.6C74.8 74.9 63 65.5 48 65.5z" fill="#fdfdff"/>
+        <path d="M18.6 96c1.6-13.2 7.4-22 15.6-25.6L40.6 78 34.4 96z" fill="url(#nlbAvaJacket)"/>
+        <path d="M77.4 96c-1.6-13.2-7.4-22-15.6-25.6L55.4 78 61.6 96z" fill="url(#nlbAvaJacket)"/>
+        <ellipse cx="32.6" cy="46.4" rx="2.6" ry="3.4" fill="#f2c8a8"/>
+        <ellipse cx="63.4" cy="46.4" rx="2.6" ry="3.4" fill="#f2c8a8"/>
+        <ellipse cx="48" cy="45" rx="15.6" ry="18" fill="#f8d6bb"/>
+        <ellipse cx="35.6" cy="51.6" rx="3.5" ry="2.3" fill="#ef9c8b" opacity="0.42"/>
+        <ellipse cx="60.4" cy="51.6" rx="3.5" ry="2.3" fill="#ef9c8b" opacity="0.42"/>
+        <path d="M32.4 42.6c-1.8-12.4 5.8-21 15.6-21s17.4 8.6 15.6 21c-2.4-7.4-6.6-11.6-11.8-12.9-2.6 3-7 4.9-11.4 4.9-3.9 0-6.5 2.3-8 8z" fill="url(#nlbAvaHair)"/>
+        <path d="M37.6 39.4c1.9-1.6 4.5-1.8 6.4-.7" fill="none" stroke="#c1974a" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M58.4 39.4c-1.9-1.6-4.5-1.8-6.4-.7" fill="none" stroke="#c1974a" stroke-width="1.7" stroke-linecap="round"/>
+        <rect x="34.2" y="41.6" width="12.8" height="10.2" rx="4.6" fill="#ffffff" fill-opacity="0.3" stroke="#3a4a63" stroke-width="1.7"/>
+        <rect x="49" y="41.6" width="12.8" height="10.2" rx="4.6" fill="#ffffff" fill-opacity="0.3" stroke="#3a4a63" stroke-width="1.7"/>
+        <path d="M47 46.3h2" fill="none" stroke="#3a4a63" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M34.2 45h-3.4M61.8 45h3.4" fill="none" stroke="#3a4a63" stroke-width="1.7" stroke-linecap="round"/>
+        <circle cx="40.6" cy="46.7" r="2.2" fill="#3f5877"/>
+        <circle cx="55.4" cy="46.7" r="2.2" fill="#3f5877"/>
+        <circle cx="41.3" cy="45.9" r="0.7" fill="#ffffff"/>
+        <circle cx="56.1" cy="45.9" r="0.7" fill="#ffffff"/>
+        <path d="M48 50.2v3" fill="none" stroke="#e2b191" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M44.4 56.6c1.2-1.1 2.3-1.1 3.6 0 1.3-1.1 2.4-1.1 3.6 0-1 2-2.3 3-3.6 3s-2.6-1-3.6-3z" fill="#d85f60"/>
+        <circle cx="31.4" cy="53.4" r="1.5" fill="#f6e2b8"/>
+        <circle cx="64.6" cy="53.4" r="1.5" fill="#f6e2b8"/>
+    </g>
+</svg>

@@ -1,0 +1,168 @@
+================================================================
+СТЕНД: 1С-Битрикс «Управление сайтом» (Стандарт) + шаблон NLB Bootstrap
+Папка стенда: D:\bitrix doker
+Источник демо: D:\nlbbootstrap-main
+Начат: 07.11.2026
+================================================================
+
+ЦЕЛЬ
+----
+Поднять локальный стенд Битрикса в Docker и развернуть на нём демо-проект
+из D:\nlbbootstrap-main (шаблон nlb_bootstrap + страницы + миграции db/).
+
+ПЛАН
+----
+1. Docker-окружение: php 8.3 + apache + ionCube, mysql 8.4, порты 8080 / 3307.
+2. Ядро Битрикса: дистрибутив standard_encode (демо-редакция «Стандарт»),
+   распаковка в www/, установка через мастер (БД, админ, демо-ключ).
+3. Наложение файлов проекта: страницы + local/ + db/ + tools/, БЕЗ перезаписи
+   bitrix/, upload/, .settings.php, dbconn.php.
+4. Данные: php db/lint.php -> php db/run.php -> php db/check.php.
+5. Привязка шаблона nlb_bootstrap к сайту, очистка кеша.
+6. Проверка: главная, /news/, /events/, /services/, /books/, /contacts/, админка.
+
+----------------------------------------------------------------
+ЖУРНАЛ
+----------------------------------------------------------------
+[07.11.2026] Разведка
+  - Docker 29.9.1, compose v5.6.0, WSL: только distro docker-desktop (Ubuntu нет).
+  - Порты 8080/3307 свободны (3306 занят Laragon — не трогаем).
+  - Образ mysql:8.4 уже локально (1.12 ГБ) — тянем только PHP.
+  - Сеть до 1c-bitrix.ru есть: bitrixsetup.php = 127 760 байт.
+  - Дистрибутивы доступны: start 313 МБ, standard 318 МБ,
+    small_business 375 МБ, business 398 МБ.
+  - Выбран «Стандарт»: шаблону нужны инфоблоки/компоненты/формы,
+    магазин и CRM не нужны (и меньше демо-мусора).
+  - ВАЖНО: *_encode.tar.gz — кодированная сборка, нужен ionCube Loader
+    -> добавлен в образ (иначе страницы падают «encoded file cannot be run»).
+
+[07.11.2026] Файлы стенда
+  - docker-compose.yml (web 8080, db 3307, том mysql_data)
+  - php/Dockerfile (gd+webp, mysqli, zip, mbstring, intl, xsl, ionCube)
+  - php/php.ini (memory_limit 512M, upload 128M, timezone Europe/Moscow)
+  - php/apache.conf (AllowOverride All -> .htaccess/ЧПУ работают)
+  - README.md
+
+[07.11.2026] Установка ядра Битрикса
+  - Дистрибутив скачан напрямую: standard_encode.tar.gz (318 МБ).
+  - Распаковка в контейнере: ~6.4 мин; chown -R 33:33: 45.7 с.
+  - Мастер установки пройден HTTP-скриптами (action=welcome -> agreement ->
+    check_license_key -> requirements -> create_database -> create_modules
+    (AJAX-цикл, 53 шага) -> __finish). Все проверки системы зелёные.
+  - БД bitrix: 416 таблиц. Демо-контент Битрикса НЕ устанавливался,
+    демо-инфоблоков нет.
+  - Пользователей после установки не было -> создан администратор
+    (логин admin, пароль Bitrix!2026, группа 1 «Администраторы»).
+
+[07.11.2026] Наложение проекта и миграции
+  - Скрипт work/overlay-project.ps1: корневые index.php, 404.php, urlrewrite.php,
+    robots.txt, sitemap.php, sw.js, offline.html, manifest.webmanifest + каталоги
+    about, api, auth, books, collections, contacts, demo, events, feedback, local,
+    news, personal, preview, printing, privacy, rules, search, services, sitemap,
+    subscribe, terms, db, tools, menu.
+  - bitrix/, upload/, .settings.php, dbconn.php, .htaccess НЕ перезаписывались.
+  - db/lint.php: 0 ошибок.
+  - db/run.php целиком падает на шаге 003 (см. дефект №1) -> миграции
+    003–012 выполнены по одной в отдельных процессах.
+  - db/check.php OK: 3 типа инфоблоков, 9 инфоблоков, 65 свойств,
+    12 разделов, 91 элемент (news 10, events 6, collections 6, books 24,
+    services 8, printing 37), меню top/bottom/services/printing.
+  - Шаблон nlb_bootstrap привязан к сайту s1: php db/run.php --only=007 --set-template.
+  - Почтовые типы NLB_NEW_REQUEST (73), NLB_NEW_BOOKING (74),
+    NLB_BOOKING_CLIENT (75) созданы вручную (дефект №2), затем повторно
+    прогнаны 008 и 012: шаблоны писем ID 44, 45, 46.
+
+[07.11.2026] Найденные дефекты проекта и правки в развёрнутой копии
+  ВАЖНО: исходный репозиторий D:\nlbbootstrap-main не изменялся.
+  Все правки сделаны только в D:\bitrix doker\www.
+  1. db/run.php: nlb_iblock_id() кеширует 0 (db/lib/helpers.php:34), поэтому
+     после шага 002 шаг 003 не видит инфоблоки. Обход: миграции по одной.
+     В репозитории функцию надо чинить (не кешировать нулевой ID).
+  2. CEventType::GetList() с фильтром по EVENT_NAME/LID возвращает все строки,
+     из-за чего 008/012 не создавали типы событий. Типы созданы прямым SQL.
+  3. local/php_interface/init.php: nlb_db.php использует CIBlock, но модуль
+     iblock не подключён -> 500 «Class "CIBlock" not found» на всех страницах.
+     Добавлено: \Bitrix\Main\Loader::includeModule('iblock').
+  4. Шаблон breadcrumb вызывал $this->setFrameMode(), а включается из
+     CMain::GetNavChain ($this = CMain) -> 500. Обёрнуто в method_exists().
+  5. Формы заявок передавали 'GROUPS' => [] — компонент iblock.element.add.form
+     пускает только админов, гость не мог отправить форму (ошибок нет, форма
+     просто не обрабатывалась). Исправлено на [2] в feedback/index.php,
+     services/detail.php, books/detail.php.
+  6. Поля формы назывались PROPERTY[NAME], а компонент ждёт PROPERTY[NAME][0]
+     -> в NAME попадал только первый символ (или пусто). Исправлено в
+     local/php_interface/include/nlb_forms.php (и чтение $_POST).
+  7. У инфоблоков requests/bookings/orders миграция 002 ставит CODE и XML_ID
+     обязательными, а форма их не передаёт -> «Обязательное поле "Символьный
+     код" не заполнено». В БД стенда снят IS_REQUIRED для CODE/XML_ID
+     (b_iblock_fields, ID 7/8/9), плюс OnBeforeIBlockElementAdd генерирует
+     CODE/XML_ID для элементов форм.
+  8. В nlb_forms.php вызывалась nlb_site_id(), а она определена только в
+     db/lib/helpers.php (в рантайме сайта её нет) -> Error ловился catch
+     и письма молча не создавались. Добавлена guarded-функция nlb_site_id()
+     в nlb_forms.php.
+  9. urlrewrite.php: условия вида '#^/services/([a-z0-9_-]+)/#' без якоря
+     ломались на query string: /services/<code>/?sent=1 уходил в 404
+     (правило склеивало CODE с параметрами). Условия detail-правил заменены
+     на '#^/<раздел>/([a-z0-9_-]+)/?(?:\?(.*))?$#i' с 'RULE' => 'CODE=$1&$2'.
+     Проверено: detail + ?sent=1 = 200, списки (?section=, ?PAGEN_1=) = 200.
+
+[07.11.2026] Проверка стенда
+  - Страницы 200: /, /news/, /events/, /services/, /books/, /contacts/, /about/,
+    /printing/, /collections/, /search/, /feedback/, /rules/, /privacy/, /terms/,
+    /auth/, /subscribe/, /sitemap/, /personal/ (302 на логин),
+    /bitrix/admin/ (200).
+  - Детальные страницы 200: /news/<code>/, /events/<code>/, /books/<code>/,
+    /services/<code>/, /printing/<code>/, /collections/<code>/.
+  - Пагинация /news/?PAGEN_1=2 = 200. Разделы /news/?section=library = 200.
+    ЧПУ вида /news/library/ = 404 — это штатное поведение проекта
+    (разделы открываются query-параметром ?section=, см. urlrewrite.php).
+  - Форма заявки (/feedback/) проверена POST-ом с реальной капчей:
+    элемент создаётся, письмо NLB_NEW_REQUEST ставится в очередь.
+  - Форма брони (/services/observation-deck/): элемент bookings создаётся,
+    уведомления NLB_NEW_BOOKING и NLB_BOOKING_CLIENT ставятся в очередь,
+    после редиректа показывается сообщение успеха.
+  - Форма заказа (/books/<code>/): элемент orders создаётся, сообщение успеха.
+  - Тестовые элементы и письма после проверки удалены; _setup/ удалён.
+  - Вход в админку под admin: панель открывается (проверено cookies+GET).
+  - debug в bitrix/.settings.php возвращён в false.
+
+[07.11.2026] Доступы
+  - Сайт: http://localhost:8080/
+  - Админка: http://localhost:8080/bitrix/admin/  (admin / Bitrix!2026)
+  - MySQL снаружи: 127.0.0.1:3307, БД bitrix,
+    пользователь bitrix / bitrix_pass, root: bitrix_root.
+  - Изнутри контейнера хост БД: db.
+
+[07.11.2026] Запуск и остановка
+  - cd "D:\bitrix doker"
+  - docker compose up -d          (поднять; после перезагрузки ПК тоже)
+  - docker compose down           (остановить, данные в томе mysql_data)
+  - логи: docker compose logs -f web; файлы: log/apache/
+  - CLI от www-data: docker compose exec -T -u www-data web php <файл>
+    (от root нельзя: db/logs и upload станут root-owned).
+
+[07.11.2026] Ограничения стенда
+  - Письма формируются (b_event), но не отправляются: SMTP не настроен,
+    SUCCESS_EXEC = F. Для реальной отправки нужен SMTP в настройках
+    главного модуля или sendmail в контейнере.
+  - Элементы, созданные формами, активны только после модерации:
+    компонент ставит ACTIVE=N (STATUS_NEW = ANY). Это штатное поведение
+    выбранных параметров, не ошибка.
+  - Лицензия демо-редакции «Стандарт» ограничена по сроку — по истечении
+    появится предупреждение о лицензии.
+  - Диск: стек на D: (www ~1.03 ГБ), свободно на D: ~185 ГБ; на C: ~55 ГБ.
+    Docker-образы занимают ~5.2 ГБ (в т.ч. образы соседнего проекта),
+    поэтому docker system prune / image prune -a на этой машине НЕ запускать.
+  - Дистрибутив кодирован ionCube — образ без ionCube Loader работать не будет.
+
+[07.11.2026] Дополнительно
+  - Прямой HTTP-доступ к local/php_interface закрыт
+    (www/local/php_interface/.htaccess, Require all denied; PHP-включения
+    не затронуты). /db/ и /tools/ закрыты штатными .htaccess проекта (403).
+  - Удалены установочные артефакты: www/_setup, install.config, readme.html;
+    bitrixsetup.php в webroot отсутствует.
+  - В work/ оставлены только скрипты автоматизации, лог установки и страницы
+    мастера (stages/); 318-МБ архив дистрибутива и HTML-дампы удалены.
+  - Добавлен .htaccess в local/php_interface — единственная новая правка
+    инфраструктуры после наложения проекта.

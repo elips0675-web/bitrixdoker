@@ -1,0 +1,48 @@
+name: bitrix-nlb
+
+services:
+  web:
+    build:
+      context: ./php
+    image: bitrix-nlb/php:8.3
+    container_name: bitrix-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./www:/var/www/html
+      - ./log/apache:/var/log/apache2
+      - ./php/php.ini:/usr/local/etc/php/conf.d/zz-bitrix.ini:ro
+    environment:
+      TZ: Europe/Moscow
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    container_name: bitrix-db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: bitrix_root
+      MYSQL_DATABASE: bitrix
+      MYSQL_USER: bitrix
+      MYSQL_PASSWORD: bitrix_pass
+      TZ: Europe/Moscow
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --sql-mode=STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+      - --max_allowed_packet=64M
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pbitrix_root"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+
+volumes:
+  mysql_data:

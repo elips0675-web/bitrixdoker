@@ -17,6 +17,7 @@ return [
     'items' => [
         [
             'xml_id' => 'nlb-news-001',
+            'sort' => 10,
             'name' => 'Библиотека открыла цифровой читальный зал',
             'code' => 'cifrovoy-chitalnyy-zal',
             'active_from' => '2026-11-02 10:00:00',
@@ -32,6 +33,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-002',
+            'sort' => 20,
             'name' => 'Новые поступления: 250 книг в ноябре',
             'code' => 'novye-postupleniya-noyabr',
             'active_from' => '2026-10-30 09:30:00',
@@ -47,6 +49,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-003',
+            'sort' => 30,
             'name' => 'Лекторий «Читаем вместе»: расписание на декабрь',
             'code' => 'lektoriy-chitaem-vmeste-dekabr',
             'active_from' => '2026-10-28 12:00:00',
@@ -62,6 +65,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-004',
+            'sort' => 40,
             'name' => 'Как записаться в библиотеку за пять минут',
             'code' => 'kak-zapisatsya-v-biblioteku',
             'active_from' => '2026-10-25 08:00:00',
@@ -77,6 +81,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-005',
+            'sort' => 50,
             'name' => 'Коворкинг на втором этаже: новые места',
             'code' => 'kovorking-novye-mesta',
             'active_from' => '2026-10-21 14:15:00',
@@ -92,6 +97,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-006',
+            'sort' => 60,
             'name' => 'Подкаст «Между строк»: вышел второй сезон',
             'code' => 'podkast-mezhdu-strok-sezon-2',
             'active_from' => '2026-10-18 11:00:00',
@@ -107,6 +113,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-007',
+            'sort' => 70,
             'name' => 'Детская мастерская: набор в кружок',
             'code' => 'detskaya-masterskaya-nabor',
             'active_from' => '2026-10-14 10:00:00',
@@ -122,6 +129,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-008',
+            'sort' => 80,
             'name' => 'Редкие издания оцифрованы',
             'code' => 'redkie-izdaniya-ocifrovany',
             'active_from' => '2026-10-10 15:40:00',
@@ -137,6 +145,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-009',
+            'sort' => 90,
             'name' => 'Библионочь-2026: как это было',
             'code' => 'biblionoch-2026-itogi',
             'active_from' => '2026-10-05 09:00:00',
@@ -152,6 +161,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-news-010',
+            'sort' => 100,
             'name' => 'Новый сервис: бронирование переговорных',
             'code' => 'bronirovanie-peregovornyh',
             'active_from' => '2026-09-30 13:20:00',

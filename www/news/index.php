@@ -21,6 +21,7 @@ $APPLICATION->SetPageProperty(
     'description',
     'Новости библиотеки: новые поступления, проекты, партнёрства и анонсы мероприятий.'
 );
+$APPLICATION->AddChainItem('Новости');
 
 ?>
 

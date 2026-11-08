@@ -23,6 +23,33 @@
 
 ## Журнал
 
+[08.11.2026] Стенд синхронизирован с шаблоном: корень «Главная» в крошках, обновлённые db-хелперы
+  - Наложен проект из `D:\nlbbootstrap-main` (`www/tools/overlay-project.ps1`):
+    16 страниц `www/*/index.php` получили `$APPLICATION->AddChainItem(...)`,
+    добавлен `www/.section.php` с `$sSectionName = 'Главная'`.
+    `CMain::GetNavChain()` читает `.section.php` в каждом каталоге, поэтому
+    в цепочке появилось первое звено «Главная» — без этого списки
+    (`/news/`, `/services/`, `/contacts/`) оставались без крошек.
+  - `www/db/lib/helpers.php` (+79), `www/db/config/iblocks.php` (6),
+    `www/db/check.php` (4), `www/db/lint.php` (10),
+    `www/local/php_interface/include/nlb_db.php` (42) — синхронно с шаблоном;
+    `db/tests/run.php`, `db/lib/helpers.php`, `db/config/iblocks.php`
+    побайтово совпадают с `D:\nlbbootstrap-main`.
+  - Новые тесты: `www/db/tests/iblock-collision.php`, `events-filter.php`,
+    `sort.php`; пересобран `www/db/search/index.json`.
+  - `www/tools/` — `overlay-project.ps1` (скрипт наложения), `check-template.mjs`
+    и `check-doc-numbers.mjs`. Обе копии гейтов сняты на момент наложения;
+    в шаблоне они обновлены позже (Stage 64/65), то есть стенд отстаёт на
+    правки инструментов, а не кода.
+  - Проверено: `php db/lint.php` — 0 ошибок; `php db/tests/run.php` — 62
+    проверки, exit 0; `php db/check.php` — «структура и демо-контент совпадают
+    с db/config»; `/`, `/about/`, `/news/`, `/services/`, `/contacts/`,
+    `/printing/foto-magnity/` — 200, строки «1» нет; крошки: «Главная /
+    О библиотеке», «Главная / Новости», «Главная / Услуги», «Главная /
+    Контакты», «Главная / Печатные услуги / Фото-магниты»; на `/` блока нет.
+  - Не проверено: `/bitrix/admin/` после наложения (публичные страницы и
+    компоненты проверены, админка — нет); `www/preview/` не пересобиралось.
+
 [08.11.2026] Cron: агенты и очередь работают без захода на сайт (закрыт P0-2)
   - `php/Dockerfile` — пакет `cron` (строка 18), `COPY crontab
     /etc/cron.d/bitrix` и `chmod 0644` (строки 34-36): имя без точки в

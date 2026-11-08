@@ -6,6 +6,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
 
 $APPLICATION->SetTitle('Правила пользования');
+$APPLICATION->AddChainItem('Правила пользования');
 $APPLICATION->SetPageProperty(
     'description',
     'Правила пользования библиотекой: запись, работа в залах, выдача книг и поведение.'

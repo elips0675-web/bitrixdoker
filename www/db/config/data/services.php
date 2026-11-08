@@ -17,6 +17,7 @@ return [
     'items' => [
         [
             'xml_id' => 'nlb-srv-001',
+            'sort' => 10,
             'name' => 'Обзорная площадка',
             'code' => 'observation-deck',
             'active_from' => '2026-09-01 10:00:00',
@@ -53,6 +54,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-srv-002',
+            'sort' => 20,
             'name' => 'Сауна',
             'code' => 'sauna',
             'active_from' => '2026-09-01 10:05:00',
@@ -89,6 +91,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-srv-003',
+            'sort' => 30,
             'name' => 'Кафе',
             'code' => 'cafe',
             'active_from' => '2026-09-01 10:10:00',
@@ -124,6 +127,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-srv-004',
+            'sort' => 40,
             'name' => 'Лекторий',
             'code' => 'lecture-hall',
             'active_from' => '2026-09-01 10:15:00',
@@ -159,6 +163,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-srv-005',
+            'sort' => 50,
             'name' => 'Концертный зал',
             'code' => 'concert-hall',
             'active_from' => '2026-09-01 10:20:00',
@@ -194,6 +199,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-srv-006',
+            'sort' => 60,
             'name' => 'Детская комната',
             'code' => 'kids-zone',
             'active_from' => '2026-09-01 10:25:00',
@@ -229,6 +235,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-srv-007',
+            'sort' => 70,
             'name' => 'Спортзал',
             'code' => 'gym',
             'active_from' => '2026-09-01 10:30:00',
@@ -265,6 +272,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-srv-008',
+            'sort' => 80,
             'name' => 'Коворкинг',
             'code' => 'coworking',
             'active_from' => '2026-09-01 10:35:00',

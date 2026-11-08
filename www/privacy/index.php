@@ -9,6 +9,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
 
 $APPLICATION->SetTitle('Политика конфиденциальности');
+$APPLICATION->AddChainItem('Политика конфиденциальности');
 $APPLICATION->SetPageProperty(
     'description',
     'Какие данные собирает сайт библиотеки, зачем нужны cookie и как отозвать согласие.'

@@ -9,6 +9,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
 
 $APPLICATION->SetTitle('Подписка на рассылку');
+$APPLICATION->AddChainItem('Подписка на рассылку');
 $APPLICATION->SetPageProperty(
     'description',
     'Подпишитесь на анонсы событий и новости библиотеки. Отписка — в один клик.'

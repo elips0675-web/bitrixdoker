@@ -91,6 +91,7 @@ const required = [
     'sitemap.php',
     'urlrewrite.php',
     '404.php',
+    '.section.php',
     'local/php_interface/init.php',
     'local/php_interface/include/nlb_db.php',
     'local/php_interface/include/nlb_seo.php',

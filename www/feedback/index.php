@@ -13,6 +13,7 @@ $eventXmlId = isset($_GET['event']) ? (string)$_GET['event'] : '';
 $eventXmlId = (string)preg_replace('/[^a-z0-9_-]/i', '', $eventXmlId);
 
 $APPLICATION->SetTitle('Обратная связь');
+$APPLICATION->AddChainItem('Обратная связь');
 $APPLICATION->SetPageProperty(
     'description',
     'Напишите в библиотеку: вопрос о фондах, услугах, событиях или сотрудничестве.'

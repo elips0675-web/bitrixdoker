@@ -11,6 +11,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
 $counts = nlb_counts();
 
 $APPLICATION->SetTitle('О библиотеке');
+$APPLICATION->AddChainItem('О библиотеке');
 $APPLICATION->SetPageProperty(
     'description',
     'Библиотека 2026 — современное пространство для чтения, работы и встреч: фонды, услуги, события.'

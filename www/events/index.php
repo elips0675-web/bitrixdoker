@@ -14,10 +14,7 @@ $sectionCode = (string)preg_replace('/[^a-z0-9_-]/i', '', $sectionCode);
 $sectionId = $sectionCode !== '' ? nlb_iblock_section_id('events', $sectionCode) : 0;
 $past = isset($_GET['past']) && (string)$_GET['past'] === '1';
 
-$now = ConvertTimeStamp(time(), 'FULL');
-$GLOBALS['nlbEventsFilter'] = $past
-    ? ['<ACTIVE_FROM' => $now]
-    : ['>=ACTIVE_FROM' => $now];
+$GLOBALS['nlbEventsFilter'] = nlb_events_filter($past);
 
 if ($sectionId > 0) {
     $GLOBALS['nlbEventsFilter']['SECTION_ID'] = $sectionId;
@@ -39,6 +36,7 @@ $APPLICATION->SetPageProperty(
     'description',
     'Афиша библиотеки: лекции, мастер-классы, встречи с авторами и детские занятия.'
 );
+$APPLICATION->AddChainItem($past ? 'Прошедшие события' : 'События');
 
 ?>
 

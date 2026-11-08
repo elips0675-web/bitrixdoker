@@ -90,7 +90,7 @@ return [
             'sort' => 100,
             'list_page_url' => '/news/',
             'detail_page_url' => '/news/#ELEMENT_CODE#/',
-            'section_page_url' => '/news/#SECTION_CODE#/',
+            'section_page_url' => '/news/?section=#SECTION_CODE#',
             'sections' => 'Y',
             'properties' => [
                 'AUTHOR' => [
@@ -136,7 +136,7 @@ return [
             'sort' => 110,
             'list_page_url' => '/events/',
             'detail_page_url' => '/events/#ELEMENT_CODE#/',
-            'section_page_url' => '/events/#SECTION_CODE#/',
+            'section_page_url' => '/events/?section=#SECTION_CODE#',
             'sections' => 'Y',
             'properties' => [
                 'DATE' => [
@@ -243,7 +243,7 @@ return [
             'sort' => 200,
             'list_page_url' => '/books/',
             'detail_page_url' => '/books/#ELEMENT_CODE#/',
-            'section_page_url' => '/books/#SECTION_CODE#/',
+            'section_page_url' => '/books/?section=#SECTION_CODE#',
             'sections' => 'Y',
             'properties' => [
                 'AUTHOR' => [

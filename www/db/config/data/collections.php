@@ -12,6 +12,7 @@ return [
     'items' => [
         [
             'xml_id' => 'nlb-col-001',
+            'sort' => 10,
             'name' => 'Набор для коллег',
             'code' => 'nabor-dlya-kolleg',
             'active_from' => '2026-09-01 12:00:00',
@@ -25,6 +26,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-col-002',
+            'sort' => 20,
             'name' => 'Набор для дома',
             'code' => 'nabor-dlya-doma',
             'active_from' => '2026-09-01 12:05:00',
@@ -38,6 +40,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-col-003',
+            'sort' => 30,
             'name' => 'Набор «Читаю»',
             'code' => 'nabor-chitayu',
             'active_from' => '2026-09-01 12:10:00',
@@ -51,6 +54,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-col-004',
+            'sort' => 40,
             'name' => 'Набор для путешествий',
             'code' => 'nabor-dlya-puteshestviy',
             'active_from' => '2026-09-01 12:15:00',
@@ -64,6 +68,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-col-005',
+            'sort' => 50,
             'name' => 'Набор для детей',
             'code' => 'nabor-dlya-detey',
             'active_from' => '2026-09-01 12:20:00',
@@ -77,6 +82,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-col-006',
+            'sort' => 60,
             'name' => 'Набор на память о Минске',
             'code' => 'nabor-na-pamyat-o-minske',
             'active_from' => '2026-09-01 12:25:00',

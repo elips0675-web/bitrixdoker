@@ -14,6 +14,7 @@ $query = isset($_GET['q']) ? trim((string)$_GET['q']) : '';
 $query = mb_substr($query, 0, 200);
 
 $APPLICATION->SetTitle($query !== '' ? 'Поиск: ' . $query : 'Поиск по сайту');
+$APPLICATION->AddChainItem($query !== '' ? 'Поиск: ' . $query : 'Поиск по сайту');
 $APPLICATION->SetPageProperty(
     'description',
     'Поиск по книгам, событиям, новостям, услугам и печатному каталогу библиотеки.'

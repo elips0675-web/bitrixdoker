@@ -15,6 +15,7 @@ if (!$USER->IsAuthorized()) {
 }
 
 $APPLICATION->SetTitle('Личный кабинет');
+$APPLICATION->AddChainItem('Личный кабинет');
 $APPLICATION->SetPageProperty(
     'description',
     'Профиль читателя, подписка на рассылку и настройки аккаунта.'

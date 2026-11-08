@@ -17,6 +17,7 @@ return [
     'items' => [
         [
             'xml_id' => 'nlb-evt-001',
+            'sort' => 10,
             'name' => 'Лекция «Как читать современную прозу»',
             'code' => 'lekciya-kak-chitat-sovremennuyu-prozu',
             'active_from' => '2026-10-20 10:00:00',
@@ -37,6 +38,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-evt-002',
+            'sort' => 20,
             'name' => 'Детский книжный клуб «Совёнок»',
             'code' => 'detskiy-klub-sovenok',
             'active_from' => '2026-10-22 10:00:00',
@@ -57,6 +59,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-evt-003',
+            'sort' => 30,
             'name' => 'Мастер-класс: нейросети для гуманитариев',
             'code' => 'master-klass-neyroseti',
             'active_from' => '2026-10-24 10:00:00',
@@ -77,6 +80,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-evt-004',
+            'sort' => 40,
             'name' => 'Поэтический вечер «Осенние строки»',
             'code' => 'poeticheskiy-vecher-osen',
             'active_from' => '2026-10-26 10:00:00',
@@ -97,6 +101,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-evt-005',
+            'sort' => 50,
             'name' => 'Экскурсия по фонду редких книг',
             'code' => 'ekskursiya-fond-redkih-knig',
             'active_from' => '2026-10-27 10:00:00',
@@ -117,6 +122,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-evt-006',
+            'sort' => 60,
             'name' => 'Игротека настольных игр',
             'code' => 'igroteka-nastolnyh-igr',
             'active_from' => '2026-10-29 10:00:00',

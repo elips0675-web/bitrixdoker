@@ -98,7 +98,7 @@ const claims = [
     { file: 'README.md', re: /^\| Свойств \| (\d+)/m, keys: ['properties'] },
     { file: 'README.md', re: /^\| Разделов \| (\d+)/m, keys: ['sections'] },
     { file: 'README.md', re: /^\| Элементов демо-контента \| (\d+)/m, keys: ['elements'] },
-    { file: 'README.md', re: /автотест на заглушках ядра \((\d+) проверок\)/, keys: ['db_tests'] },
+    { file: 'README.md', re: /автотест на заглушках ядра \((\d+) проверк(?:а|ок)\)/, keys: ['db_tests'] },
     { file: 'README.md', re: /фильтр чата: (\d+) фраз, (\d+) проверок/, keys: ['filter_cases', 'filter_checks'] },
     { file: 'README.md', re: /поиск: индекс, математика, (\d+) запросов/, keys: ['search_cases'] },
     { file: 'README.md', re: /собранный индекс: (\d+) документов, (\d+) термов/, keys: ['index_docs', 'index_terms'] },
@@ -106,22 +106,22 @@ const claims = [
     { file: 'README.md', re: /`filter-selftest\.php` — (\d+) из (\d+)/, keys: ['filter_checks', 'filter_checks'] },
     { file: 'README.md', re: /`search-selftest\.php` — (\d+) из (\d+)/, keys: ['search_checks', 'search_checks'] },
     { file: 'README.md', re: /на (\d+) фразах/, keys: ['filter_cases'] },
-    { file: 'README.md', re: /\((\d+) файлов вне `preview\/`/, keys: ['php_files'] },
+    { file: 'README.md', re: /\((\d+) файл(?:ов|а)? вне `preview\/`/, keys: ['php_files'] },
 
     /* project-context.md */
     { file: 'project-context.md', re: /`styles\.css`, ([\d ]+) строк/, keys: ['css_lines'] },
     { file: 'project-context.md', re: /`db\/`, (\d+) инфоблоков, (\d+) элемент/, keys: ['iblocks', 'elements'] },
-    { file: 'project-context.md', re: /Синтаксис всех (\d+) PHP-файлов/, keys: ['php_files'] },
+    { file: 'project-context.md', re: /Синтаксис всех (\d+) PHP-файл(?:ов|а)?/, keys: ['php_files'] },
 
     /* AGENTS.md */
-    { file: 'AGENTS.md', re: /по всем (\d+) PHP-файлам/, keys: ['php_files'] },
+    { file: 'AGENTS.md', re: /по всем (\d+) PHP-файл(?:ам|у)?/, keys: ['php_files'] },
 
     /* Как работает.txt */
     { file: 'Как работает.txt', re: /(\d+) инфоблоков, включая bookings/, keys: ['iblocks'] },
 
     /* Что доделать.txt */
-    { file: 'Что доделать.txt', re: /все (\d+) PHP-файлов вне/, keys: ['php_files'] },
-    { file: 'Что доделать.txt', re: /\(`php -l` — (\d+) файлов, 0 ошибок на 8\.3\.30/, keys: ['php_files'] },
+    { file: 'Что доделать.txt', re: /все (\d+) PHP-файл(?:ов|а)? вне/, keys: ['php_files'] },
+    { file: 'Что доделать.txt', re: /\(`php -l` — (\d+) файл(?:ов|а)?, 0 ошибок на 8\.3\.30/, keys: ['php_files'] },
 
     /* db/README.md */
     { file: 'db/README.md', re: /Ожидаемый вывод `run\.php`: (\d+) шагов/, keys: ['migrations'] },
@@ -136,7 +136,7 @@ const claims = [
         re: /, (\d+) свойств, (\d+) разделов, (\d+) демо-элемент/,
         keys: ['properties', 'sections', 'elements'],
     },
-    { file: 'docs/roadmap.md', re: /всех PHP-файлов \((\d+) файлов, 0 ошибок\)/, keys: ['php_files'] },
+    { file: 'docs/roadmap.md', re: /всех PHP-файлов \((\d+) файл(?:ов|а)?, 0 ошибок\)/, keys: ['php_files'] },
     {
         file: 'docs/roadmap.md',
         re: /слой БД: (\d+) инфоблоков, (\d+) свойств, (\d+) элемент, (\d+) миграций/,
@@ -152,15 +152,15 @@ const claims = [
     { file: 'test/01-ПРОДУКТ.txt', re: /^    Строк styles\.css[ \t]+([\d ]+)/m, keys: ['css_lines'] },
     { file: 'test/01-ПРОДУКТ.txt', re: /^    HTML в статическом превью[ \t]+(\d+)/m, keys: ['preview_html'] },
     { file: 'test/01-ПРОДУКТ.txt', re: /^    Документов docs\/\*\.md[ \t]+(\d+)/m, keys: ['docs_md'] },
-    { file: 'test/01-ПРОДУКТ.txt', re: /заявлено (\d+) файлов/, keys: ['php_files'] },
-    { file: 'test/01-ПРОДУКТ.txt', re: /\((\d+) проверок на заглушках/, keys: ['db_tests'] },
+    { file: 'test/01-ПРОДУКТ.txt', re: /заявлено (\d+) файл(?:ов|а)?/, keys: ['php_files'] },
+    { file: 'test/01-ПРОДУКТ.txt', re: /\((\d+) проверк(?:а|ок) на заглушках/, keys: ['db_tests'] },
     { file: 'test/02-СТРУКТУРА-И-ФАЙЛЫ.txt', re: /^[ \t]*styles\.css[ \t]+([\d ]+) строк/m, keys: ['css_lines'] },
     { file: 'test/02-СТРУКТУРА-И-ФАЙЛЫ.txt', re: /^[ \t]*script\.js[ \t]+([\d ]+) строк/m, keys: ['script_js_lines'] },
     { file: 'test/03-ТЕХНИКА-И-ДАННЫЕ.txt', re: /Свой JS[ \t]+ES5-совместимый, ([\d ]+) строк/, keys: ['script_js_lines'] },
     { file: 'test/03-ТЕХНИКА-И-ДАННЫЕ.txt', re: /([\d ]+) строк[ \t]+styles\.css/, keys: ['css_lines'] },
     { file: 'test/Для анализа.txt', re: /^[ \t]*script\.js[ \t]+([\d ]+) строк/m, keys: ['script_js_lines'] },
     { file: 'test/Для анализа.txt', re: /Свой JS[ \t]+ES5-совместимый, ([\d ]+) строк/, keys: ['script_js_lines'] },
-    { file: 'test/04-СОСТОЯНИЕ-И-РИСКИ.txt', re: /\((\d+) файлов, PHP/, keys: ['php_files'] },
+    { file: 'test/04-СОСТОЯНИЕ-И-РИСКИ.txt', re: /\((\d+) файл(?:ов|а)?, PHP/, keys: ['php_files'] },
     { file: 'test/04-СОСТОЯНИЕ-И-РИСКИ.txt', re: /db\/tests\/run\.php (\d+) из (\d+)/, keys: ['db_tests', 'db_tests'] },
 
     { file: 'test/Для анализа.txt', re: /^    PHP-файлов \(без preview\)[ \t]+(\d+)/m, keys: ['php_files'] },
@@ -169,11 +169,11 @@ const claims = [
     { file: 'test/Для анализа.txt', re: /^    Строк styles\.css[ \t]+([\d ]+)/m, keys: ['css_lines'] },
     { file: 'test/Для анализа.txt', re: /^    HTML в статическом превью[ \t]+(\d+)/m, keys: ['preview_html'] },
     { file: 'test/Для анализа.txt', re: /^    Документов docs\/\*\.md[ \t]+(\d+)/m, keys: ['docs_md'] },
-    { file: 'test/Для анализа.txt', re: /синтаксис PHP \((\d+) файлов, 0 ошибок/, keys: ['php_files'] },
+    { file: 'test/Для анализа.txt', re: /синтаксис PHP \((\d+) файл(?:ов|а)?, 0 ошибок/, keys: ['php_files'] },
     { file: 'test/Для анализа.txt', re: /^[ \t]*styles\.css[ \t]+([\d ]+) строк/m, keys: ['css_lines'] },
     { file: 'test/Для анализа.txt', re: /([\d ]+) строк[ \t]+styles\.css/, keys: ['css_lines'] },
-    { file: 'test/Для анализа.txt', re: /db\/tests\/run\.php[ \t]+(\d+) проверок/, keys: ['db_tests'] },
-    { file: 'test/Для анализа.txt', re: /\((\d+) файлов, PHP/, keys: ['php_files'] },
+    { file: 'test/Для анализа.txt', re: /db\/tests\/run\.php[ \t]+(\d+) проверк(?:а|ок)/, keys: ['db_tests'] },
+    { file: 'test/Для анализа.txt', re: /\((\d+) файл(?:ов|а)?, PHP/, keys: ['php_files'] },
     { file: 'test/Для анализа.txt', re: /db\/tests\/run\.php (\d+) из (\d+)/, keys: ['db_tests', 'db_tests'] },
 ];
 

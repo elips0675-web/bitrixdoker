@@ -10,6 +10,7 @@ $APPLICATION->SetPageProperty(
     'description',
     'Печать документов, сканирование, переплёт, ламинирование и сувениры: цены и условия.'
 );
+$APPLICATION->AddChainItem('Каталог печатных услуг');
 
 ?>
 

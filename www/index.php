@@ -196,10 +196,8 @@ $stats = [
         </div>
 
         <?php
-        // Только предстоящие: дата начала события хранится в ACTIVE_FROM.
-        $GLOBALS['nlbHomeEventsFilter'] = [
-            '>=ACTIVE_FROM' => ConvertTimeStamp(time(), 'FULL'),
-        ];
+        // Только предстоящие: дата начала события хранится в DATE_ACTIVE_FROM.
+        $GLOBALS['nlbHomeEventsFilter'] = nlb_events_filter(false);
         $APPLICATION->IncludeComponent('bitrix:news.list', 'nlb_cards', [
             'IBLOCK_TYPE' => 'nlb_content',
             'IBLOCK_ID' => nlb_iblock_id('events'),

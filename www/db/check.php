@@ -54,6 +54,10 @@ nlb_say('Типы инфоблоков: ' . count($config['types']));
 /* 2. Инфоблоки и содержимое */
 $rows = [];
 foreach ($config['iblocks'] as $code => $iblock) {
+    foreach (nlb_iblock_foreign($code, (string)($iblock['type'] ?? '')) as $foreignId => $foreignType) {
+        nlb_check_fail("{$code}: чужой инфоблок ID {$foreignId} в типе {$foreignType} — код занят");
+    }
+
     $iblockId = nlb_iblock_id($code);
     if ($iblockId <= 0) {
         nlb_check_fail("нет инфоблока {$code} ({$iblock['name']})");

@@ -12,6 +12,7 @@ return [
     'items' => [
         [
             'xml_id' => 'nlb-prn-001',
+            'sort' => 10,
             'name' => 'Печать и копирование',
             'code' => 'pechat-dokumentov',
             'active_from' => '2026-09-01 11:00:00',
@@ -23,6 +24,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-002',
+            'sort' => 20,
             'name' => 'Сканирование',
             'code' => 'skanirovanie',
             'active_from' => '2026-09-01 11:05:00',
@@ -34,6 +36,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-003',
+            'sort' => 30,
             'name' => 'Переплёт и ламинирование',
             'code' => 'pereplyot-i-laminirovanie',
             'active_from' => '2026-09-01 11:07:00',
@@ -44,6 +47,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-004',
+            'sort' => 40,
             'name' => 'Визитки',
             'code' => 'vizitki',
             'active_from' => '2026-09-01 11:10:00',
@@ -55,6 +59,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-005',
+            'sort' => 50,
             'name' => 'Брошюры и буклеты',
             'code' => 'broshyury-i-buklety',
             'active_from' => '2026-09-01 11:15:00',
@@ -66,6 +71,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-006',
+            'sort' => 60,
             'name' => 'Широкоформатная печать',
             'code' => 'shirokiy-format',
             'active_from' => '2026-09-01 11:20:00',
@@ -77,6 +83,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-007',
+            'sort' => 70,
             'name' => 'Печать на холсте',
             'code' => 'pechat-na-holste',
             'active_from' => '2026-09-01 11:25:00',
@@ -88,6 +95,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-008',
+            'sort' => 80,
             'name' => 'Печать на кружках',
             'code' => 'kruzhki',
             'active_from' => '2026-09-01 11:30:00',
@@ -99,6 +107,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-009',
+            'sort' => 90,
             'name' => 'Печать на футболках',
             'code' => 'futbolki',
             'active_from' => '2026-09-01 11:35:00',
@@ -110,6 +119,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-010',
+            'sort' => 100,
             'name' => 'Календари',
             'code' => 'kalendari',
             'active_from' => '2026-09-01 11:40:00',
@@ -120,6 +130,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-011',
+            'sort' => 110,
             'name' => 'Наклейки и стикеры',
             'code' => 'nakleyki-i-stikery',
             'active_from' => '2026-09-01 11:45:00',
@@ -130,6 +141,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-012',
+            'sort' => 120,
             'name' => 'Фотопечать',
             'code' => 'fotopechat',
             'active_from' => '2026-09-01 11:50:00',
@@ -140,6 +152,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-013',
+            'sort' => 130,
             'name' => 'Чертежи и плакаты',
             'code' => 'chertezhi-i-plakaty',
             'active_from' => '2026-09-01 11:55:00',
@@ -150,6 +163,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-014',
+            'sort' => 140,
             'name' => 'Открытки и приглашения',
             'code' => 'otkrytki-i-priglasheniya',
             'active_from' => '2026-09-01 12:00:00',
@@ -160,6 +174,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-015',
+            'sort' => 150,
             'name' => 'Блокноты и ежедневники',
             'code' => 'bloknoty-i-ezhednevniki',
             'active_from' => '2026-09-01 12:05:00',
@@ -170,6 +185,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-016',
+            'sort' => 160,
             'name' => 'Печать на пакетах',
             'code' => 'pechat-na-paketah',
             'active_from' => '2026-09-01 12:10:00',
@@ -180,6 +196,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-017',
+            'sort' => 170,
             'name' => 'Бейджи',
             'code' => 'beydzhi',
             'active_from' => '2026-09-01 12:15:00',
@@ -190,6 +207,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-018',
+            'sort' => 180,
             'name' => 'Печати и штампы',
             'code' => 'pechati-i-shtampy',
             'active_from' => '2026-09-01 12:20:00',
@@ -200,6 +218,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-019',
+            'sort' => 190,
             'name' => 'Флажки и вымпелы',
             'code' => 'flazhki-i-vympely',
             'active_from' => '2026-09-01 12:25:00',
@@ -210,6 +229,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-020',
+            'sort' => 200,
             'name' => 'Бланки и фирменные формы',
             'code' => 'blanki-i-firmyennye-formy',
             'active_from' => '2026-09-01 12:30:00',
@@ -220,6 +240,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-021',
+            'sort' => 210,
             'name' => 'Конверты с логотипом',
             'code' => 'konverty-s-logotipom',
             'active_from' => '2026-09-01 12:35:00',
@@ -230,6 +251,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-022',
+            'sort' => 220,
             'name' => 'Папки фирменные',
             'code' => 'papki-firmyennye',
             'active_from' => '2026-09-01 12:40:00',
@@ -240,6 +262,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-023',
+            'sort' => 230,
             'name' => 'Ценники и ярлыки',
             'code' => 'tsenniki-i-yarlyki',
             'active_from' => '2026-09-01 12:45:00',
@@ -250,6 +273,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-024',
+            'sort' => 240,
             'name' => 'Презентации',
             'code' => 'prezentatsii',
             'active_from' => '2026-09-01 12:50:00',
@@ -260,6 +284,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-025',
+            'sort' => 250,
             'name' => 'Брелоки',
             'code' => 'breloki',
             'active_from' => '2026-09-01 12:55:00',
@@ -270,6 +295,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-026',
+            'sort' => 260,
             'name' => 'Магниты',
             'code' => 'magnity',
             'active_from' => '2026-09-01 13:00:00',
@@ -280,6 +306,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-027',
+            'sort' => 270,
             'name' => 'Значки и пины',
             'code' => 'znachki-i-piny',
             'active_from' => '2026-09-01 13:05:00',
@@ -290,6 +317,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-028',
+            'sort' => 280,
             'name' => 'Ручки с лого',
             'code' => 'ruchki-s-logo',
             'active_from' => '2026-09-01 13:10:00',
@@ -300,6 +328,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-029',
+            'sort' => 290,
             'name' => 'Флешки с лого',
             'code' => 'fleshki-s-logo',
             'active_from' => '2026-09-01 13:15:00',
@@ -310,6 +339,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-030',
+            'sort' => 300,
             'name' => 'Пазлы с фото',
             'code' => 'pazly-s-foto',
             'active_from' => '2026-09-01 13:20:00',
@@ -320,6 +350,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-031',
+            'sort' => 310,
             'name' => 'Печать панорамных фото',
             'code' => 'pechat-panoramnyh-foto',
             'active_from' => '2026-09-01 13:25:00',
@@ -330,6 +361,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-032',
+            'sort' => 320,
             'name' => 'Печать квадратных фото',
             'code' => 'pechat-kvadratnyh-foto',
             'active_from' => '2026-09-01 13:30:00',
@@ -340,6 +372,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-033',
+            'sort' => 330,
             'name' => 'Фото большого формата',
             'code' => 'foto-bolshogo-formata',
             'active_from' => '2026-09-01 13:35:00',
@@ -350,6 +383,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-034',
+            'sort' => 340,
             'name' => 'Фотокниги',
             'code' => 'fotoknigi',
             'active_from' => '2026-09-01 13:40:00',
@@ -360,6 +394,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-035',
+            'sort' => 350,
             'name' => 'Фотоколлажи',
             'code' => 'fotokollazhi',
             'active_from' => '2026-09-01 13:45:00',
@@ -370,6 +405,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-036',
+            'sort' => 360,
             'name' => 'Фото на акриле',
             'code' => 'foto-na-akrile',
             'active_from' => '2026-09-01 13:50:00',
@@ -380,6 +416,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-prn-037',
+            'sort' => 370,
             'name' => 'Фото-магниты',
             'code' => 'foto-magnity',
             'active_from' => '2026-09-01 13:55:00',

@@ -80,26 +80,91 @@ if (!function_exists('nlb_site_id')) {
     }
 }
 
+if (!function_exists('nlb_iblock_type_of')) {
+    /**
+     * Тип инфоблока (`nlb_content`, `nlb_catalog`, `nlb_services`) по коду.
+     *
+     * Пустая строка — кода нет в конфиге: тогда фильтр по типу не накладывается.
+     */
+    function nlb_iblock_type_of(string $code): string
+    {
+        static $types = null;
+        if ($types === null) {
+            $types = [];
+            foreach (nlb_load_config('iblocks')['iblocks'] as $iblockCode => $iblock) {
+                $types[(string)$iblockCode] = (string)($iblock['type'] ?? '');
+            }
+        }
+        return $types[$code] ?? '';
+    }
+}
+
 if (!function_exists('nlb_iblock_id')) {
-    function nlb_iblock_id(string $code): int
+    /**
+     * ID своего инфоблока по символьному коду.
+     *
+     * Код в Битриксе не уникален: инфоблок с тем же `CODE` может принадлежать
+     * другому типу (демо-контент другой редакции, чужой шаблон). Поэтому
+     * фильтр включает `IBLOCK_TYPE_ID`, а тип найденной строки проверяется
+     * ещё раз — на случай, если ядро фильтр проигнорировало.
+     */
+    function nlb_iblock_id(string $code, string $typeId = ''): int
     {
         static $cache = [];
-        if (array_key_exists($code, $cache)) {
-            return $cache[$code];
+        $typeId = $typeId !== '' ? $typeId : nlb_iblock_type_of($code);
+        $key = $code . '|' . $typeId;
+        if (array_key_exists($key, $cache)) {
+            return $cache[$key];
         }
+
         $id = 0;
+        $filter = [
+            'CODE' => $code,
+            'CHECK_PERMISSIONS' => 'N',
+        ];
+        if ($typeId !== '') {
+            $filter['IBLOCK_TYPE_ID'] = $typeId;
+        }
+
+        $res = CIBlock::GetList(['SORT' => 'ASC'], $filter);
+        while ($row = $res->Fetch()) {
+            if ($typeId !== '' && (string)($row['IBLOCK_TYPE_ID'] ?? '') !== $typeId) {
+                continue;
+            }
+            $id = (int)$row['ID'];
+            break;
+        }
+
+        // Ноль не кешируем: инфоблок может быть создан позже в этом же запуске.
+        if ($id > 0) {
+            $cache[$key] = $id;
+        }
+        return $id;
+    }
+}
+
+if (!function_exists('nlb_iblock_foreign')) {
+    /**
+     * Чужие инфоблоки с тем же `CODE`, но другим типом.
+     *
+     * Возвращает список [ID => IBLOCK_TYPE_ID]: такие инфоблоки мешают
+     * установке — миграция 002 не создаст свой, если искать только по коду.
+     */
+    function nlb_iblock_foreign(string $code, string $typeId = ''): array
+    {
+        $typeId = $typeId !== '' ? $typeId : nlb_iblock_type_of($code);
+        $found = [];
         $res = CIBlock::GetList(['SORT' => 'ASC'], [
             'CODE' => $code,
             'CHECK_PERMISSIONS' => 'N',
         ]);
-        if ($row = $res->Fetch()) {
-            $id = (int)$row['ID'];
+        while ($row = $res->Fetch()) {
+            $rowType = (string)($row['IBLOCK_TYPE_ID'] ?? '');
+            if ($typeId !== '' && $rowType !== $typeId) {
+                $found[(int)$row['ID']] = $rowType;
+            }
         }
-        // Ноль не кешируем: инфоблок может быть создан позже в этом же запуске.
-        if ($id > 0) {
-            $cache[$code] = $id;
-        }
-        return $id;
+        return $found;
     }
 }
 

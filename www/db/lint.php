@@ -239,6 +239,7 @@ foreach ($dataFiles as $file) {
     $properties = $iblock['properties'];
     $sectionCodes = nlb_pluck($iblock['sections_data'], 'code');
     $itemCodes = [];
+    $itemSorts = [];
     $perIblock[$iblockCode] = count($data['items']);
 
     foreach ($data['items'] as $index => $item) {
@@ -270,6 +271,15 @@ foreach ($dataFiles as $file) {
         $activeFrom = (string)($item['active_from'] ?? '');
         if (!nlb_is_iso_datetime($activeFrom)) {
             nlb_fail("{$label}: active_from '{$activeFrom}' должен быть ISO 'ГГГГ-ММ-ДД ЧЧ:ММ:СС'");
+        }
+
+        $sort = $item['sort'] ?? null;
+        if (!is_int($sort) || $sort <= 0) {
+            nlb_fail("{$label}: sort должен быть положительным числом — иначе порядок карточек задаёт СУБД");
+        } elseif (isset($itemSorts[$sort])) {
+            nlb_fail("{$label}: sort {$sort} уже занят элементом {$itemSorts[$sort]}");
+        } else {
+            $itemSorts[$sort] = $code;
         }
 
         $section = (string)($item['section'] ?? '');

@@ -9,6 +9,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
 
 $APPLICATION->SetTitle('Контакты');
+$APPLICATION->AddChainItem('Контакты');
 $APPLICATION->SetPageProperty(
     'description',
     'Адрес, телефон, e-mail и часы работы библиотеки. Как добраться и куда обратиться.'

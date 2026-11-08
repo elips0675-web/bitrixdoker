@@ -20,6 +20,7 @@ $APPLICATION->SetPageProperty(
     'description',
     'Сувениры библиотеки: брелоки, фарфор, кружки, одежда, канцелярия, магниты и аксессуары.'
 );
+$APPLICATION->AddChainItem('Сувенирная продукция');
 
 ?>
 

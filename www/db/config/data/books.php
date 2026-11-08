@@ -15,6 +15,7 @@ return [
     'items' => [
         [
             'xml_id' => 'nlb-book-001',
+            'sort' => 10,
             'name' => 'Брелок «Книга»',
             'code' => 'brelok-kniga',
             'active_from' => '2026-09-01 09:00:00',
@@ -34,6 +35,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-002',
+            'sort' => 20,
             'name' => 'Брелок «Сова»',
             'code' => 'brelok-sova',
             'active_from' => '2026-09-01 09:05:00',
@@ -53,6 +55,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-003',
+            'sort' => 30,
             'name' => 'Кружка «Библиотека 2026»',
             'code' => 'kruzhka-biblioteka',
             'active_from' => '2026-09-01 09:10:00',
@@ -72,6 +75,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-004',
+            'sort' => 40,
             'name' => 'Термокружка «Читай»',
             'code' => 'termokruzhka-chitay',
             'active_from' => '2026-09-01 09:15:00',
@@ -91,6 +95,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-005',
+            'sort' => 50,
             'name' => 'Футболка «Читаю»',
             'code' => 'futbolka-chitayu',
             'active_from' => '2026-09-01 09:20:00',
@@ -110,6 +115,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-006',
+            'sort' => 60,
             'name' => 'Худи «Библиотека»',
             'code' => 'hudi-biblioteka',
             'active_from' => '2026-09-01 09:25:00',
@@ -129,6 +135,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-007',
+            'sort' => 70,
             'name' => 'Ежедневник «Планы»',
             'code' => 'ezhednevnik-plany',
             'active_from' => '2026-09-01 09:30:00',
@@ -148,6 +155,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-008',
+            'sort' => 80,
             'name' => 'Набор карандашей',
             'code' => 'nabor-karandashey',
             'active_from' => '2026-09-01 09:35:00',
@@ -167,6 +175,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-009',
+            'sort' => 90,
             'name' => 'Магнит «Книга — лучший подарок»',
             'code' => 'magnit-kniga-luchshiy-podarok',
             'active_from' => '2026-09-01 09:40:00',
@@ -186,6 +195,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-010',
+            'sort' => 100,
             'name' => 'Набор открыток «Минск»',
             'code' => 'nabor-otkrytok-minsk',
             'active_from' => '2026-09-01 09:45:00',
@@ -205,6 +215,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-011',
+            'sort' => 110,
             'name' => 'Шоппер «Библиотека»',
             'code' => 'shopper-biblioteka',
             'active_from' => '2026-09-01 09:50:00',
@@ -224,6 +235,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-012',
+            'sort' => 120,
             'name' => 'Зонт «Читальный зал»',
             'code' => 'zont-chitalnyy-zal',
             'active_from' => '2026-09-01 09:55:00',
@@ -243,6 +255,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-013',
+            'sort' => 130,
             'name' => 'Фарфоровая тарелка «Библиотека»',
             'code' => 'farforovaya-tarelka-biblioteka',
             'active_from' => '2026-09-01 10:00:00',
@@ -262,6 +275,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-014',
+            'sort' => 140,
             'name' => 'Чайная пара «Минск»',
             'code' => 'chaynaya-para-minsk',
             'active_from' => '2026-09-01 10:05:00',
@@ -281,6 +295,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-015',
+            'sort' => 150,
             'name' => 'Фарфоровая статуэтка «Сова»',
             'code' => 'farforovaya-statuetka-sova',
             'active_from' => '2026-09-01 10:10:00',
@@ -300,6 +315,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-016',
+            'sort' => 160,
             'name' => 'Блокнот «Заметки»',
             'code' => 'bloknot-zametki',
             'active_from' => '2026-09-01 10:15:00',
@@ -319,6 +335,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-017',
+            'sort' => 170,
             'name' => 'Ручка «Библиотека»',
             'code' => 'ruchka-biblioteka',
             'active_from' => '2026-09-01 10:20:00',
@@ -338,6 +355,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-018',
+            'sort' => 180,
             'name' => 'Набор гелевых ручек',
             'code' => 'nabor-gelevyh-ruchek',
             'active_from' => '2026-09-01 10:25:00',
@@ -357,6 +375,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-019',
+            'sort' => 190,
             'name' => 'Магнит «Минск»',
             'code' => 'magnit-minsk',
             'active_from' => '2026-09-01 10:30:00',
@@ -376,6 +395,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-020',
+            'sort' => 200,
             'name' => 'Магнит-рамка для фото',
             'code' => 'magnit-ramka-dlya-foto',
             'active_from' => '2026-09-01 10:35:00',
@@ -395,6 +415,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-021',
+            'sort' => 210,
             'name' => 'Брелок «Герб»',
             'code' => 'brelok-gerb',
             'active_from' => '2026-09-01 10:40:00',
@@ -414,6 +435,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-022',
+            'sort' => 220,
             'name' => 'Ароматизатор в машину «Книга»',
             'code' => 'aromatizator-v-mashinu-kniga',
             'active_from' => '2026-09-01 10:45:00',
@@ -433,6 +455,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-023',
+            'sort' => 230,
             'name' => 'Держатель для телефона в машину',
             'code' => 'derzhatel-telefona-v-mashinu',
             'active_from' => '2026-09-01 10:50:00',
@@ -452,6 +475,7 @@ return [
         ],
         [
             'xml_id' => 'nlb-book-024',
+            'sort' => 240,
             'name' => 'Кепка «Читаю»',
             'code' => 'kepka-chitayu',
             'active_from' => '2026-09-01 10:55:00',

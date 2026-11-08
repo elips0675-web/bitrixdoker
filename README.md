@@ -12,8 +12,8 @@
 
 | Путь | Содержимое |
 |------|------------|
-| `docker-compose.yml` | web (8080) + db MySQL 8.4 (3307), том `mysql_data` |
-| `php/` | Dockerfile (php 8.3-apache + ionCube Loader), `php.ini`, `apache.conf` |
+| `docker-compose.yml` | web (8080) + cron + db MySQL 8.4 (3307), том `mysql_data` |
+| `php/` | Dockerfile (php 8.3-apache + ionCube Loader), `php.ini`, `apache.conf`, `crontab` (агенты Битрикса раз в минуту) |
 | `www/` | корень сайта: страницы проекта, `local/` (шаблон `nlb_bootstrap`, обработчики), `db/` (миграции и проверки), `tools/`, `menu/`, `preview/` |
 | `www/upload/iblock/` | картинки демо-контента (элементы инфоблоков) |
 | `work/` | скрипты автоматизации установки, `stages.log`, `stand-fixes.sql` |
@@ -31,11 +31,63 @@
 ```bash
 docker compose up -d --build      # поднять
 docker compose logs -f web        # логи
+docker compose logs -f cron       # агенты и очередь почты
 docker compose exec web bash      # внутрь контейнера
 docker compose down               # остановить (данные БД в томе mysql_data)
 node tools/check-stand-docs.mjs   # документация: ссылки, бэклог, журнал, числа
 php tools/stand-facts.php --json  # факты из кода для сверки чисел
 ```
+
+## Cron
+
+Сервис `cron` (контейнер `bitrix-cron`, тот же образ, что у `web`) держит демон
+`cron` и раз в минуту запускает от `www-data`:
+
+```bash
+cd /var/www/html && flock -n /tmp/bitrix-cron.lock php -f bitrix/modules/main/tools/cron_events.php
+```
+
+Расписание лежит в репозитории — `php/crontab`, при сборке образа копируется
+в `/etc/cron.d/bitrix`. Лог — `www/db/logs/cron.log` (каталог в `.gitignore`).
+`flock` не даёт двум прогонам пересечься, если предыдущий не успел.
+
+Так агенты Битрикса, очередь почты и рассылка `sender` работают без захода
+посетителя. Проверка:
+
+```bash
+docker compose logs cron
+docker compose exec -T db mysql -ubitrix -pbitrix_pass bitrix \
+  -e "SELECT ID, LAST_EXEC, NEXT_EXEC FROM b_agent ORDER BY LAST_EXEC DESC LIMIT 5"
+tail -n 40 www/db/logs/cron.log
+```
+
+Прогон вручную, когда не хочется ждать минуту:
+
+```bash
+docker compose exec -T -u www-data -w /var/www/html cron \
+  php -f bitrix/modules/main/tools/cron_events.php
+```
+
+`CAgent::ExecuteAgents()` кеширует «до какого времени агентов нет»
+(`CACHED_b_agent` = 3600), и ключ зависит от режима.
+`bitrix/modules/main/include/constants.php:110-113` определяет
+`BX_CRONTAB_SUPPORT = defined('BX_CRONTAB')`; `cron_events.php` определяет
+`BX_CRONTAB` до `prolog_before.php`, поэтому `CAgent::OnCron()` возвращает
+`true`, в SQL добавляется `IS_PERIOD='N'`, а ключ кэша становится
+`agents AND IS_PERIOD='N' ` (на обычном заходе — `agents`). Пока метка этого
+ключа в будущем, и демон, и ручной прогон молча ничего не делают, а чистка
+`"agents"` не помогает — ключ другой. Сбросить оба ключа:
+
+```bash
+docker compose exec -T cron sh -c 'rm -rf /var/www/html/bitrix/managed_cache/MYSQL/agents/*'
+```
+
+Две оговорки по контейнеру. `docker compose logs cron` пуст: в образе нет
+`/dev/log`, а Debian cron пишет в syslog, а не в stderr, поэтому признак работы
+— `b_agent.LAST_EXEC` и `www/db/logs/cron.log`. И расписание считается по UTC:
+`/etc/localtime` нет, `TZ` демон не наследует (зонд `date` в задании печатает
+UTC при московском времени в шелле). Для `* * * * *` это неважно, для часового
+расписания нужен `/etc/localtime` или `CRON_TZ`.
 
 ## Учётки
 
@@ -64,6 +116,13 @@ php tools/stand-facts.php --json  # факты из кода для сверки
 - Письма формируются и ставятся в очередь, но без SMTP не отправляются
   (`SUCCESS_EXEC = F`).
 - Элементы, созданные формами, попадают в модерацию (`ACTIVE=N`).
+- Cron работает отдельным сервисом `cron`: агенты выполняются без захода на
+  сайт. Проверено при остановленном `web` — `b_agent.LAST_EXEC` сдвинулся
+  с `07:17:29` на `07:48:03`, `NEXT_EXEC` — на `08:18:03` (раздел «Cron»).
+- Крошки на детальных страницах: шаблон `breadcrumb/bootstrap` возвращает
+  строку, поэтому из `.page-head` ушла «1», а крошки больше не выводятся до
+  `<!DOCTYPE html>` (фикс шаблона, Stage 61; файлы на стенде и в
+  `D:\nlbbootstrap-main` совпадают побайтово).
 
 ## Документация
 
@@ -128,6 +187,10 @@ php tools/stand-facts.php --json  # факты из кода для сверки
    существующей базе. `work/stand-fixes.sql` — исторический обход, не нужен.
 7. Проверить данные: `docker compose exec -T -u www-data web php /var/www/html/db/check.php`
    (ожидается `OK: структура и демо-контент совпадают с db/config`).
+8. Cron поднимается вместе с остальными сервисами — отдельного шага нет:
+   `docker compose up -d --build` создаёт `bitrix-cron` с расписанием
+   `php/crontab`. Проверка — раздел «Cron»: `docker compose logs cron` и
+   `LAST_EXEC` в `b_agent` двигается без захода на сайт.
 
 ## Полезное
 

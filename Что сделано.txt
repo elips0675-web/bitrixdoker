@@ -23,6 +23,60 @@
 
 ## Журнал
 
+[08.11.2026] Cron: агенты и очередь работают без захода на сайт (закрыт P0-2)
+  - `php/Dockerfile` — пакет `cron` (строка 18), `COPY crontab
+    /etc/cron.d/bitrix` и `chmod 0644` (строки 34-36): имя без точки в
+    `cron.d` обязательно, права 0644, конец файла — перевод строки.
+  - `php/crontab` (новый) — раз в минуту от `www-data`:
+    `cd /var/www/html && flock -n /tmp/bitrix-cron.lock
+    /usr/local/bin/php -f bitrix/modules/main/tools/cron_events.php
+    >> /var/www/html/db/logs/cron.log 2>&1`.
+  - `docker-compose.yml` — сервис `cron` (контейнер `bitrix-cron`, образ
+    `bitrix-nlb/php:8.3`, `command: cron -f -L 15`, тома `./www` и
+    `php/php.ini`, `TZ: Europe/Moscow`, `depends_on db healthy`). Отдельный
+    сервис, а не cron внутри `web`: перезапуск сайта не рвёт расписание, а
+    у `web` и `cron` один образ и один код на диске.
+  - Проверено главное: `docker compose stop web`, сброс кэша агентов, минута
+    ожидания — демон сам выполнил агентов: `b_agent.LAST_EXEC` у ID 35
+    (`security`: `CSecuritySession::CleanUpAgent()`) и 42 (`ui`:
+    `TempFileAgent::clearOldRecords()`) сдвинулся с `2026-11-08 07:17:29` на
+    `2026-11-08 07:48:03`, `NEXT_EXEC` — с `07:33:21` на `08:18:03`
+    (`AGENT_INTERVAL` = 1800). Запросов к сайту в это время не было.
+  - Почему первые проверки «не работали»: `CAgent::ExecuteAgents()` кеширует
+    «до какого времени агентов нет» (`CACHED_b_agent` = 3600), и ключ зависит
+    от режима. `bitrix/modules/main/include/constants.php:110-113`:
+    `BX_CRONTAB_SUPPORT = defined('BX_CRONTAB')`; `cron_events.php` определяет
+    `BX_CRONTAB` до `prolog_before.php`, поэтому `CAgent::OnCron()` = `true`,
+    в SQL добавляется `IS_PERIOD='N'`, а ключ становится
+    `agents AND IS_PERIOD='N' ` (на обычном заходе — `agents`). Пока метка
+    этого ключа в будущем, и демон, и ручной прогон молча ничего не делают;
+    `Clean("agents", "agents")` не помогал — чистился другой ключ.
+  - Диагностика, которая это показала: `ReflectionClass('CAgent')`
+    (`classes/general/agent.php`), значения `CACHED_b_agent` и
+    `BX_CRONTAB_SUPPORT`, три ключа кэша с их метками, `BX_AGENTS_LOG_FUNCTION`
+    (ни одной строки `start` — функция выходила до цикла агентов),
+    неизменные `DATE_CHECK` / `RUNNING` / `RETRY_COUNT`.
+  - Логи демона в `docker compose logs cron` пусты: в контейнере нет
+    `/dev/log`, а Debian cron пишет в syslog, а не в stderr. Признак работы —
+    `b_agent.LAST_EXEC`, `www/db/logs/cron.log` и зонд вида
+    `* * * * * root date >> /tmp/proof` (сработал через минуту после создания).
+  - Время в заданиях считается по UTC: `/etc/localtime` и `/etc/timezone`
+    в образе нет, `TZ` из compose демон в задание не передаёт (зонд `date`
+    напечатал UTC при `07:40 MSK` в шелле). Для `* * * * *` это неважно, для
+    часового расписания нужен `/etc/localtime` или `CRON_TZ`.
+  - `README.md` — раздел «Cron» (расписание, лог, проверка, ручной прогон,
+    оговорки про кэш и UTC), шаг 8 в «Восстановить стенд с нуля», строка
+    `php/crontab` в таблице, пункты в «Состояние».
+  - Заодно на стенд перенесён фикс шаблона крошек (Stage 61 шаблона):
+    `www/local/templates/nlb_bootstrap/components/bitrix/breadcrumb/bootstrap/template.php`
+    возвращает строку вместо печати — на детальных страницах ушла «1» из
+    `.page-head`, крошки больше не выводятся до `<!DOCTYPE html>`; файл
+    побайтово совпадает с `D:\nlbbootstrap-main`.
+  - Не проверено: доставка письма (SMTP нет — P0-1), рассылка `sender`
+    (P1-5), поведение после перезапуска Docker Desktop (демон стартует
+    `restart: unless-stopped`, но отдельного прогона «хост перезагрузили» не
+    было).
+
 [08.11.2026] Правила ведения документации перенесены на стенд
   - Взят канон шаблона (`D:\nlbbootstrap-main\AGENTS.md`,
     `D:\nlbbootstrap-main\docs\README.md`, `Промты.txt`) и применён в масштабе

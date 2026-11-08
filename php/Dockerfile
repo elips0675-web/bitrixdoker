@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libxslt1-dev \
         unzip \
         default-mysql-client \
+        cron \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" gd mysqli pdo_mysql zip mbstring intl xsl exif opcache \
     && a2enmod rewrite headers expires \
@@ -30,6 +31,8 @@ RUN set -eux; \
 
 COPY php.ini /usr/local/etc/php/conf.d/zz-bitrix.ini
 COPY apache.conf /etc/apache2/conf-available/zz-bitrix.conf
-RUN a2enconf zz-bitrix
+COPY crontab /etc/cron.d/bitrix
+RUN a2enconf zz-bitrix \
+    && chmod 0644 /etc/cron.d/bitrix
 
 WORKDIR /var/www/html

@@ -19,6 +19,22 @@ services:
       db:
         condition: service_healthy
 
+  cron:
+    build:
+      context: ./php
+    image: bitrix-nlb/php:8.3
+    container_name: bitrix-cron
+    restart: unless-stopped
+    command: ["cron", "-f", "-L", "15"]
+    volumes:
+      - ./www:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/conf.d/zz-bitrix.ini:ro
+    environment:
+      TZ: Europe/Moscow
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: mysql:8.4
     container_name: bitrix-db

@@ -1,0 +1,13 @@
+# Агенты и очередь 1С-Битрикс без захода посетителя.
+# Файл копируется в /etc/cron.d/bitrix (см. php/Dockerfile) и читается
+# демоном cron в контейнере bitrix-cron (сервис cron в docker-compose.yml).
+# Имя файла без точки в cron.d обязательно, права 0644, конец файла — перевод строки.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=""
+
+# Раз в минуту: агенты, очередь почты, рассылка sender.
+# flock не даёт двум прогонам идти одновременно, если предыдущий не успел.
+# Лог — www/db/logs/cron.log (каталог в .gitignore, 0777).
+* * * * * www-data cd /var/www/html && flock -n /tmp/bitrix-cron.lock /usr/local/bin/php -f bitrix/modules/main/tools/cron_events.php >> /var/www/html/db/logs/cron.log 2>&1

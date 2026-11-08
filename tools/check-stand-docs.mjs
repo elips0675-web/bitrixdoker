@@ -236,7 +236,7 @@ const claims = [
     },
     {
         file: 'README.md',
-        re: /web \((\d{4})\) \+ db MySQL (\d+\.\d+) \((\d{4})\)/g,
+        re: /web \((\d{4})\) \+ cron \+ db MySQL (\d+\.\d+) \((\d{4})\)/g,
         keys: ['port_web', 'mysql_version', 'port_db'],
     },
     {

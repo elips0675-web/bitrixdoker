@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Структура Битрикса: модули, компоненты, инфоблоки</title>
+<style>
+    :root {
+        --bg: #f7f8fa;
+        --card: #ffffff;
+        --text: #1f2328;
+        --muted: #5b6470;
+        --line: #dfe3e8;
+        --accent: #0d6efd;
+        --accent-soft: #e7f0ff;
+        --green: #198754;
+        --green-soft: #e8f5ee;
+        --orange: #b35c00;
+        --orange-soft: #fff3e0;
+        --purple: #6f42c1;
+        --purple-soft: #f1ecfb;
+        --code-bg: #f3f5f8;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+        overflow-wrap: break-word;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 20px 64px;
+    }
+
+    header.hero {
+        background: linear-gradient(135deg, #101828 0%, #1d3557 60%, #0d6efd 100%);
+        color: #fff;
+        padding: 48px 0 40px;
+        margin-bottom: 28px;
+    }
+
+    header.hero .wrap { padding-bottom: 0; }
+
+    header.hero h1 {
+        margin: 0 0 10px;
+        font-size: 34px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    header.hero p {
+        margin: 0;
+        max-width: 820px;
+        color: #dbe6f6;
+        font-size: 17px;
+    }
+
+    .hero-meta {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .chip {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        font-size: 13px;
+        color: #fff;
+    }
+
+    nav.toc {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 18px 22px;
+        margin: 0 0 28px;
+    }
+
+    nav.toc h2 {
+        margin: 0 0 10px;
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+    }
+
+    nav.toc ol {
+        margin: 0;
+        padding-left: 22px;
+        columns: 2;
+        column-gap: 32px;
+    }
+
+    nav.toc li { margin: 4px 0; break-inside: avoid; }
+
+    section {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 26px 28px;
+        margin-bottom: 22px;
+    }
+
+    section > h2 {
+        margin: 0 0 14px;
+        font-size: 24px;
+        line-height: 1.3;
+        scroll-margin-top: 16px;
+    }
+
+    section > h2 .num {
+        display: inline-block;
+        min-width: 30px;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+    }
+
+    h3 {
+        margin: 26px 0 10px;
+        font-size: 19px;
+    }
+
+    h4 {
+        margin: 20px 0 8px;
+        font-size: 16px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    p { margin: 10px 0; }
+    ul, ol { margin: 10px 0; padding-left: 24px; }
+    li { margin: 5px 0; }
+
+    code {
+        background: var(--code-bg);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 1px 5px;
+        font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+        font-size: 0.9em;
+        overflow-wrap: anywhere;
+    }
+
+    pre {
+        background: #101828;
+        color: #e6edf3;
+        border-radius: 10px;
+        padding: 16px 18px;
+        overflow-x: auto;
+        font-size: 13.5px;
+        line-height: 1.55;
+    }
+
+    pre code {
+        background: none;
+        border: 0;
+        padding: 0;
+        color: inherit;
+        font-size: inherit;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14.5px;
+    }
+
+    .table-scroll {
+        overflow-x: auto;
+        margin: 14px 0;
+        border-radius: 8px;
+    }
+
+    .table-scroll table { margin: 0; }
+
+    th, td {
+        border: 1px solid var(--line);
+        padding: 9px 11px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        background: #eef2f7;
+        font-weight: 600;
+    }
+
+    tbody tr:nth-child(even) td { background: #fafbfc; }
+
+    .note, .warn, .ok {
+        border-radius: 10px;
+        padding: 13px 16px;
+        margin: 14px 0;
+        font-size: 15px;
+    }
+
+    .note {
+        background: var(--accent-soft);
+        border-left: 4px solid var(--accent);
+    }
+
+    .warn {
+        background: var(--orange-soft);
+        border-left: 4px solid var(--orange);
+    }
+
+    .ok {
+        background: var(--green-soft);
+        border-left: 4px solid var(--green);
+    }
+
+    .grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin: 14px 0;
+    }
+
+    .card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+        background: #fff;
+    }
+
+    .card h4 {
+        margin: 0 0 6px;
+        color: var(--text);
+        text-transform: none;
+        font-size: 16px;
+        letter-spacing: 0;
+    }
+
+    .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+    .card.accent { border-top: 3px solid var(--accent); }
+    .card.green { border-top: 3px solid var(--green); }
+    .card.purple { border-top: 3px solid var(--purple); }
+    .card.orange { border-top: 3px solid var(--orange); }
+
+    .layers {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 16px 0;
+    }
+
+    .layer {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 11px 16px;
+        background: #fcfdfe;
+    }
+
+    .layer .lbl {
+        flex: 0 0 190px;
+        font-weight: 600;
+        color: var(--accent);
+    }
+
+    .layer .txt { color: var(--muted); font-size: 14.5px; }
+
+    .layer.small { padding: 8px 16px; }
+
+    .tag {
+        display: inline-block;
+        padding: 1px 8px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 600;
+        vertical-align: middle;
+    }
+
+    .tag.m { background: var(--accent-soft); color: var(--accent); }
+    .tag.c { background: var(--green-soft); color: var(--green); }
+    .tag.i { background: var(--purple-soft); color: var(--purple); }
+    .tag.t { background: var(--orange-soft); color: var(--orange); }
+
+    .tree {
+        font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+        font-size: 13.5px;
+        line-height: 1.6;
+        background: var(--code-bg);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px 18px;
+        overflow-x: auto;
+        white-space: pre;
+    }
+
+    .tree b { color: var(--accent); font-weight: 600; }
+    .tree i { color: var(--muted); font-style: normal; }
+
+    .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .two-col > *, .grid > * { min-width: 0; }
+
+    pre, .tree { max-width: 100%; }
+
+    @media (max-width: 760px) {
+        header.hero h1 { font-size: 26px; }
+        nav.toc ol { columns: 1; }
+        section { padding: 20px 18px; }
+        .two-col { grid-template-columns: 1fr; }
+        .layer { flex-direction: column; gap: 2px; }
+        .layer .lbl { flex: none; }
+    }
+
+    @media print {
+        header.hero { background: #fff; color: #000; }
+        header.hero p, .chip { color: #333; border-color: #999; background: none; }
+        nav.toc { display: none; }
+        section { break-inside: avoid; border-color: #bbb; }
+    }
+
+    footer.page {
+        color: var(--muted);
+        font-size: 14px;
+        text-align: center;
+        padding: 18px 0 0;
+    }
+</style>
+</head>
+<body>
+
+<header class="hero">
+    <div class="wrap">
+        <h1>Структура Битрикса: модули, компоненты, инфоблоки</h1>
+        <p>Как устроен 1С-Битрикс и как эти сущности связаны между собой на стенде
+           «Библиотека 2026». Простыми словами, с примерами из этого проекта.</p>
+        <div class="hero-meta">
+            <span class="chip">Битрикс 26.150.0</span>
+            <span class="chip">PHP 8.3</span>
+            <span class="chip">Шаблон nlb_bootstrap</span>
+            <span class="chip">Обновлено 09.11.2026</span>
+        </div>
+    </div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+    <h2>Содержание</h2>
+    <ol>
+        <li><a href="#layers">Битрикс за 30 секунд</a></li>
+        <li><a href="#module">Модуль</a></li>
+        <li><a href="#component">Компонент</a></li>
+        <li><a href="#iblock">Инфоблок</a></li>
+        <li><a href="#template">Шаблон сайта и страница</a></li>
+        <li><a href="#flow">Как всё работает вместе</a></li>
+        <li><a href="#infra">События, агенты, кэш, почта</a></li>
+        <li><a href="#stand">Как устроен этот стенд</a></li>
+        <li><a href="#matrix">Кто за что отвечает</a></li>
+        <li><a href="#confusion">Частые путаницы</a></li>
+        <li><a href="#cheatsheet">Шпаргалка: где искать</a></li>
+        <li><a href="#dict">Словарь</a></li>
+    </ol>
+</nav>
+
+<!-- ============================================================ -->
+<section id="layers">
+    <h2><span class="num">1.</span> Битрикс за 30 секунд</h2>
+
+    <p>1С-Битрикс — это CMS: каркас, который принимает запрос, находит страницу,
+       собирает её из готовых блоков и отдаёт HTML. Внутри всё делится на слои.
+       Сверху вниз: чем ближе к пользователю, тем «настраиваемее»; чем ниже,
+       тем «системнее».</p>
+
+    <div class="layers">
+        <div class="layer">
+            <span class="lbl">Страница</span>
+            <span class="txt">PHP-файл в корне сайта: <code>index.php</code>, <code>services/detail.php</code>.
+            Решает, что показать, и вызывает компоненты.</span>
+        </div>
+        <div class="layer">
+            <span class="lbl">Шаблон сайта</span>
+            <span class="txt">Общая обёртка: <code>header.php</code>, <code>footer.php</code>, стили, скрипты, меню.
+            Здесь лежат шаблоны компонентов проекта.</span>
+        </div>
+        <div class="layer">
+            <span class="lbl">Компонент</span>
+            <span class="txt">Готовый блок с логикой: список новостей, детальная страница, форма, меню, крошки.
+            Получает параметры и рисует HTML через свой шаблон.</span>
+        </div>
+        <div class="layer">
+            <span class="lbl">Модуль</span>
+            <span class="txt">Крупная подсистема ядра: <code>iblock</code> (инфоблоки), <code>main</code>,
+            <code>search</code>, <code>sale</code>, <code>form</code>. Модуль даёт API, таблицы БД,
+            настройки и часто — свои компоненты.</span>
+        </div>
+        <div class="layer">
+            <span class="lbl">Ядро</span>
+            <span class="txt">Каталог <code>/bitrix/</code>: загрузчик, классы, кэш, админка. Обновляется
+            вендором и в git проекта не входит.</span>
+        </div>
+        <div class="layer small">
+            <span class="lbl">Данные</span>
+            <span class="txt">Инфоблоки и их элементы в MySQL; настройки — в <code>b_option</code>,
+            пользователи — в <code>b_user</code>, письма — в <code>b_event</code>.</span>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>Главная мысль.</strong> Модуль даёт <em>возможности</em>, компонент — <em>вывод</em>,
+        инфоблок — <em>данные</em>, шаблон — <em>внешний вид</em>, страница — <em>сценарий</em>.
+        Это разные вещи, и путать их — самая частая ошибка новичка.
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="module">
+    <h2><span class="num">2.</span> Модуль <span class="tag m">module</span></h2>
+
+    <p><strong>Модуль</strong> — это подсистема ядра Битрикса, которая устанавливается,
+       обновляется и отключается целиком. У модуля есть код, свои таблицы в БД,
+       настройки, права и часто свои компоненты и почтовые события.</p>
+
+    <h3>Где лежит</h3>
+    <div class="tree">/bitrix/modules/&lt;код модуля&gt;/
+    install/            <i>— установка: создание таблиц, настроек, демо-данных</i>
+    include.php         <i>— подключается при загрузке модуля</i>
+    classes/            <i>— классы API (например, CIBlockElement)</i>
+    options.php         <i>— страница настроек в админке</i>
+    admin/              <i>— файлы админ-страниц модуля</i>
+    lang/               <i>— переводы</i></div>
+
+    <p>Код модуля не принято править: при обновлении ядра изменения в
+       <code>/bitrix/</code> затираются. Своя логика живёт в
+       <code>/local/</code> и подключается через события.</p>
+
+    <h3>Какие модули важны на стенде</h3>
+    <div class="table-scroll"><table>
+        <thead>
+            <tr><th>Модуль</th><th>Что даёт</th><th>Где видно на сайте</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>main</code></td><td>Ядро: сайты, шаблоны, пользователи, кэш, меню, почта</td><td>Всё, что угодно</td></tr>
+            <tr><td><code>iblock</code></td><td>Инфоблоки: хранение и выборка контента</td><td>Новости, услуги, товары, заявки</td></tr>
+            <tr><td><code>search</code></td><td>Поиск и индекс</td><td><code>/search/</code></td></tr>
+            <tr><td><code>form</code></td><td>Веб-формы (не путать с формами на инфоблоках)</td><td>Резерв, на стенде не используется</td></tr>
+            <tr><td><code>landing</code></td><td>Конструктор страниц</td><td>Не используется</td></tr>
+            <tr><td><code>messageservice</code></td><td>Отправка SMS/сообщений через провайдеров</td><td>Резерв для уведомлений</td></tr>
+            <tr><td><code>highloadblock</code></td><td>HL-блоки: лёгкие таблицы для справочников</td><td>Кандидат для расписания услуг</td></tr>
+            <tr><td><code>subscribe</code></td><td>Подписка на рассылку</td><td><code>/subscribe/</code></td></tr>
+            <tr><td><code>security</code></td><td>Защита, антивирус, ограничения</td><td>Админка</td></tr>
+            <tr><td><code>rest</code> + <code>b24connector</code></td><td>REST API и мост к Битрикс24</td><td>Не подключены</td></tr>
+        </tbody>
+    </table></div>
+
+    <div class="warn">
+        <strong>Модуль ≠ компонент.</strong> <code>iblock</code> — модуль. <code>bitrix:news.list</code> —
+        компонент, который <em>пользуется</em> модулем <code>iblock</code>. Отключили модуль —
+        компонент перестал работать, хотя файлы компонента на месте.
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="component">
+    <h2><span class="num">3.</span> Компонент <span class="tag c">component</span></h2>
+
+    <p><strong>Компонент</strong> — переиспользуемый блок страницы: получает параметры,
+       достаёт данные через API модулей и рисует HTML своим шаблоном.
+       Вызов выглядит так:</p>
+
+    <pre><code>&lt;?php
+$APPLICATION-&gt;IncludeComponent(
+    'bitrix:news.list',          // пространство имён и имя компонента
+    'nlb_cards',                 // шаблон компонента
+    [                            // параметры
+        'IBLOCK_TYPE' =&gt; 'nlb_content',
+        'IBLOCK_ID'   =&gt; nlb_iblock_id('news'),
+        'NEWS_COUNT'  =&gt; 6,
+        'CACHE_TIME'  =&gt; 3600,
+    ],
+    false,
+    ['HIDE_ICONS' =&gt; 'Y']
+);
+?&gt;</code></pre>
+
+    <h3>Из чего состоит компонент</h3>
+    <div class="grid">
+        <div class="card accent">
+            <h4>Логика</h4>
+            <p><code>component.php</code> или класс компонента: проверяет параметры, выбирает данные,
+               складывает их в <code>$arResult</code>.</p>
+        </div>
+        <div class="card green">
+            <h4>Шаблон</h4>
+            <p><code>template.php</code>: только вывод. Получает <code>$arResult</code> и
+               <code>$arParams</code>, не должен ходить в БД.</p>
+        </div>
+        <div class="card purple">
+            <h4>Модификатор</h4>
+            <p><code>result_modifier.php</code>: подготовка данных до шаблона (сортировка,
+               денормализация, добавление полей).</p>
+        </div>
+        <div class="card orange">
+            <h4>Эпилог</h4>
+            <p><code>component_epilog.php</code>: выполняется после шаблона, в том числе
+               при отдаче из кэша (счётчики, метки).</p>
+        </div>
+    </div>
+
+    <h3>Где ищется шаблон</h3>
+    <p>Битрикс смотрит сверху вниз и берёт первое совпадение:</p>
+    <ol>
+        <li><code>/local/templates/&lt;шаблон сайта&gt;/components/&lt;vendor&gt;/&lt;имя&gt;/&lt;шаблон&gt;/</code></li>
+        <li><code>/bitrix/templates/&lt;шаблон сайта&gt;/components/&lt;vendor&gt;/&lt;имя&gt;/&lt;шаблон&gt;/</code></li>
+        <li><code>/local/components/&lt;vendor&gt;/&lt;имя&gt;/templates/&lt;шаблон&gt;/</code></li>
+        <li><code>/bitrix/components/&lt;vendor&gt;/&lt;имя&gt;/templates/&lt;шаблон&gt;/</code></li>
+    </ol>
+
+    <div class="note">
+        Поэтому шаблоны проекта лежат в
+        <code>www/local/templates/nlb_bootstrap/components/bitrix/...</code> и
+        <strong>переопределяют</strong> штатные шаблоны из <code>/bitrix/</code>.
+        Ядро при обновлении их не трогает.
+    </div>
+
+    <h3>Кэш компонента</h3>
+    <p>Компонент сам решает, кэшировать ли результат: <code>CACHE_TIME</code> в параметрах,
+       <code>startResultCache()</code> / <code>endResultCache()</code> в коде.
+       Кэш лежит в <code>/bitrix/managed_cache/</code>.</p>
+
+    <div class="warn">
+        <strong>Правило стенда:</strong> поменяли шаблон, данные инфоблока или меню —
+        сбросьте кэш. Иначе браузер и сервер покажут старое, и будет казаться,
+        что правка «не применилась».
+    </div>
+
+    <h3>Компоненты этого проекта</h3>
+    <div class="table-scroll"><table>
+        <thead>
+            <tr><th>Компонент</th><th>Шаблон</th><th>Что рисует</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>bitrix:news.list</code></td><td><code>nlb_cards</code></td><td>Карточки новостей, событий, услуг, товаров</td></tr>
+            <tr><td><code>bitrix:news.detail</code></td><td><code>nlb_detail</code></td><td>Детальная новости или события</td></tr>
+            <tr><td><code>bitrix:news.detail</code></td><td><code>nlb_service</code></td><td>Детальная услуги с тарифами и формой брони</td></tr>
+            <tr><td><code>bitrix:iblock.element.add.form</code></td><td><code>bootstrap</code></td><td>Три формы заявок: обращение, бронь, заказ</td></tr>
+            <tr><td><code>bitrix:menu</code></td><td><code>top_bootstrap</code></td><td>Верхнее меню</td></tr>
+            <tr><td><code>bitrix:breadcrumb</code></td><td><code>bootstrap</code></td><td>Хлебные крошки</td></tr>
+            <tr><td><code>bitrix:main.feedback</code></td><td><code>bootstrap</code></td><td>Модалка обратной связи в подвале</td></tr>
+        </tbody>
+    </table></div>
+</section>
+
+<!-- ============================================================ -->
+<section id="iblock">
+    <h2><span class="num">4.</span> Инфоблок <span class="tag i">infoblock</span></h2>
+
+    <p><strong>Инфоблок</strong> — это хранилище однотипного контента: новости, услуги,
+       товары, заявки. Не «таблица в админке», а сущность модуля <code>iblock</code>
+       со своей структурой, правами, настройками и API.</p>
+
+    <div class="layers">
+        <div class="layer"><span class="lbl">Тип инфоблока</span><span class="txt">Группа инфоблоков с общими настройками. На стенде три: <code>nlb_content</code>, <code>nlb_catalog</code>, <code>nlb_services</code>.</span></div>
+        <div class="layer"><span class="lbl">Инфоблок</span><span class="txt">Конкретное хранилище: «Новости», «Услуги», «Заявки на услуги». У него есть код (<code>news</code>, <code>services</code>), ID и свойства.</span></div>
+        <div class="layer"><span class="lbl">Раздел</span><span class="txt">Иерархия внутри инфоблока (например, категории новостей). Может отсутствовать — у заявок разделов нет.</span></div>
+        <div class="layer"><span class="lbl">Элемент</span><span class="txt">Одна запись: новость, услуга, товар, бронь. У элемента есть поля и значения свойств.</span></div>
+        <div class="layer"><span class="lbl">Свойство</span><span class="txt">Дополнительное поле, своё у каждого инфоблока: цена, телефон, дата, статус, картинка.</span></div>
+    </div>
+
+    <h3>Поля элемента и свойства — не одно и то же</h3>
+    <div class="two-col">
+        <div>
+            <h4>Поля (есть у всех)</h4>
+            <ul>
+                <li><code>ID</code> — номер</li>
+                <li><code>NAME</code> — название</li>
+                <li><code>CODE</code> — символьный код для URL</li>
+                <li><code>XML_ID</code> — внешний идентификатор</li>
+                <li><code>ACTIVE</code> — <code>Y</code>/<code>N</code> (виден или нет)</li>
+                <li><code>SORT</code> — порядок</li>
+                <li><code>PREVIEW_TEXT</code>, <code>DETAIL_TEXT</code> — анонс и полный текст</li>
+                <li><code>DATE_ACTIVE_FROM</code>, <code>DATE_ACTIVE_TO</code> — период показа</li>
+            </ul>
+        </div>
+        <div>
+            <h4>Свойства (свои у каждого инфоблока)</h4>
+            <ul>
+                <li><code>S</code> — строка</li>
+                <li><code>N</code> — число</li>
+                <li><code>L</code> — список (enum): статус, цвет</li>
+                <li><code>F</code> — файл: картинка, документ</li>
+                <li><code>E</code> — привязка к элементу другого инфоблока</li>
+                <li><code>G</code> — привязка к разделу</li>
+                <li>пользовательские типы: дата/время (<code>DateTime</code>), HTML/текст</li>
+            </ul>
+        </div>
+    </div>
+
+    <p>Пример из брони: <code>NAME</code> — поле (название заявки), а
+       <code>SERVICE</code>, <code>DATE</code>, <code>TIME</code>, <code>STATUS</code> — свойства
+       инфоблока <code>bookings</code>.</p>
+
+    <h3>ACTIVE, модерация и «почему заявки не видны»</h3>
+    <p><code>ACTIVE = N</code> — элемент существует в БД, но не выводится на сайте.
+       Это не удаление. На стенде формы создают заявки с <code>ACTIVE = N</code>
+       (режим модерации): сотрудник открывает элемент в админке, проверяет
+       и включает. Политика модерации пока не зафиксирована — открытый пункт
+       бэклога P0-8.</p>
+
+    <h3>CODE, XML_ID и URL</h3>
+    <ul>
+        <li><code>CODE</code> — человекочитаемый код для адреса: <code>/services/observation-deck/</code>.</li>
+        <li><code>XML_ID</code> — стабильный идентификатор для миграций и повторного импорта:
+            по нему элемент находят и обновляют, а не создают заново.</li>
+        <li>У заявок оба поля генерируются автоматически в обработчике
+            <code>OnBeforeIBlockElementAdd</code>, чтобы не требовать их от посетителя.</li>
+    </ul>
+
+    <h3>Права</h3>
+    <p>Доступ к инфоблоку задаётся группам пользователей: <code>D</code> — нет,
+       <code>R</code> — чтение, <code>W</code> — запись, <code>X</code> — полный.
+       В формах стенда стоит <code>GROUPS =&gt; [2]</code>: группа 2 — «Все пользователи»,
+       поэтому гость может отправить заявку, но не читать чужие.</p>
+
+    <h3>API вместо SQL</h3>
+    <p>Данные инфоблока читают и пишут через API, а не прямыми запросами:</p>
+    <pre><code>CIBlockElement::GetList(
+    ['SORT' =&gt; 'ASC'],
+    ['IBLOCK_ID' =&gt; nlb_iblock_id('services'), 'ACTIVE' =&gt; 'Y'],
+    false,
+    false,
+    ['ID', 'NAME', 'CODE', 'PREVIEW_TEXT']
+);</code></pre>
+    <p>Прямой <code>SELECT</code> по <code>b_iblock_element</code> обходит кэш, права,
+       события и пользовательские типы свойств — так делать не нужно.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="template">
+    <h2><span class="num">5.</span> Шаблон сайта и страница <span class="tag t">template</span></h2>
+
+    <p><strong>Шаблон сайта</strong> — общая обёртка всех страниц: шапка, подвал,
+       стили, скрипты, меню, счётчики. На стенде это
+       <code>nlb_bootstrap</code> в <code>www/local/templates/nlb_bootstrap/</code>.</p>
+
+    <div class="tree">local/templates/nlb_bootstrap/
+    header.php          <i>— шапка: &lt;head&gt;, меню, хлебные крошки</i>
+    footer.php          <i>— подвал: контакты, скрипты, модалки</i>
+    styles.css          <i>— стили проекта</i>
+    script.js           <i>— поведение: меню, формы, слоты, push</i>
+    template_styles     <i>— описание шаблона для админки</i>
+    assets/             <i>— bootstrap, иконки, картинки, push.js, pwa.js</i>
+    components/bitrix/  <i>— переопределённые шаблоны компонентов</i></div>
+
+    <p><strong>Страница</strong> — PHP-файл, который подключает пролог, шапку,
+       компоненты и эпилог:</p>
+
+    <pre><code>&lt;?php
+require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
+
+$APPLICATION-&gt;SetTitle('Услуги');
+
+$APPLICATION-&gt;IncludeComponent('bitrix:news.list', 'nlb_cards', [
+    'IBLOCK_TYPE' =&gt; 'nlb_services',
+    'IBLOCK_ID'   =&gt; nlb_iblock_id('services'),
+]);
+
+require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/footer.php';
+?&gt;</code></pre>
+
+    <h3>Служебные файлы рядом со страницами</h3>
+    <div class="table-scroll"><table>
+        <thead><tr><th>Файл</th><th>Зачем</th></tr></thead>
+        <tbody>
+            <tr><td><code>.section.php</code></td><td>Название раздела для крошек и заголовка. Корневой <code>www/.section.php</code> даёт «Главная».</td></tr>
+            <tr><td><code>.top.menu.php</code>, <code>.left.menu.php</code></td><td>Пункты меню рядом с разделом.</td></tr>
+            <tr><td><code>urlrewrite.php</code></td><td>Правила красивых URL: <code>/services/observation-deck/</code> → <code>detail.php?CODE=...</code>.</td></tr>
+            <tr><td><code>.htaccess</code></td><td>Маршрутизация Apache и базовые ограничения.</td></tr>
+            <tr><td><code>db/</code></td><td>Особенность стенда: миграции, проверки, тесты, статистика. В штатном Битриксе такого нет.</td></tr>
+        </tbody>
+    </table></div>
+
+    <h3>Крошки и заголовок</h3>
+    <p>Цепочку навигации строит страница: <code>$APPLICATION-&gt;AddChainItem('Услуги', '/services/')</code>,
+       а выводит компонент <code>bitrix:breadcrumb</code>. Заголовок —
+       <code>$APPLICATION-&gt;SetTitle(...)</code>, выводит шаблон сайта.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="flow">
+    <h2><span class="num">6.</span> Как всё работает вместе</h2>
+
+    <p>Путь одного запроса <code>GET /services/observation-deck/</code>:</p>
+
+    <ol>
+        <li><strong>Apache + <code>.htaccess</code></strong> — определяют, что это не файл, и отдают запрос <code>urlrewrite.php</code>.</li>
+        <li><strong>Пролог</strong> (<code>/bitrix/modules/main/include/prolog.php</code>) — подключает ядро, настройки, сайт, авторизацию.</li>
+        <li><strong>Шаблон сайта</strong> — <code>header.php</code> печатает <code>&lt;head&gt;</code>, меню, начало контента.</li>
+        <li><strong>Страница</strong> — <code>services/detail.php</code> находит услугу по коду и вызывает компоненты.</li>
+        <li><strong>Компонент</strong> — <code>bitrix:news.detail</code> через модуль <code>iblock</code> выбирает элемент
+            (из кэша или из MySQL) и отдаёт <code>$arResult</code> в шаблон <code>nlb_service</code>.</li>
+        <li><strong>Шаблон компонента</strong> — рисует карточку услуги, тарифы и форму брони;
+            форма снова вызывает компонент <code>iblock.element.add.form</code>.</li>
+        <li><strong>Эпилог</strong> — <code>footer.php</code> добавляет скрипты, модалки, закрывает документ.</li>
+    </ol>
+
+    <div class="ok">
+        <strong>Проверка понимания.</strong> Если на странице «нет услуги», проблема может быть
+        на любом уровне: инфоблок пуст, элемент <code>ACTIVE=N</code>, не тот <code>CODE</code>,
+        компоненту передан неверный <code>IBLOCK_ID</code>, шаблон не тот, или просто кэш.
+        Поэтому диагностика идёт сверху вниз, а не «переписать шаблон».
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="infra">
+    <h2><span class="num">7.</span> События, агенты, кэш, почта</h2>
+
+    <h3>События (events)</h3>
+    <p>Точки расширения ядра: можно подписаться на действие и выполнить свой код,
+       не меняя <code>/bitrix/</code>.</p>
+    <pre><code>AddEventHandler('iblock', 'OnBeforeIBlockElementAdd', 'nlb_forms_before_add');
+AddEventHandler('iblock', 'OnAfterIBlockElementAdd',  'nlb_forms_after_add');
+AddEventHandler('iblock', 'OnAfterIBlockElementUpdate', 'nlb_forms_after_update');</code></pre>
+    <p>Так на стенде работают проверка занятого слота, авто-<code>CODE</code>/<code>XML_ID</code>,
+       письма и дата обработки заявки.</p>
+
+    <h3>Агенты (agents)</h3>
+    <p>Отложенные задачи: «выполнить раз в N секунд». Живут в таблице <code>b_agent</code>.
+       Запускаются либо на хитах посетителей, либо отдельным cron-процессом.
+       На стенде cron — отдельный сервис <code>cron</code>; признак работы —
+       <code>b_agent.LAST_EXEC</code> и <code>www/db/logs/cron.log</code>.</p>
+
+    <h3>Кэш</h3>
+    <ul>
+        <li><strong>Компонентный</strong> — <code>CACHE_TIME</code>, каталог <code>/bitrix/managed_cache/</code>.</li>
+        <li><strong>Инфоблоков</strong> — теги и автогенерация при изменении элемента.</li>
+        <li><strong>Меню и шаблонов</strong> — свой кэш у компонентов.</li>
+        <li><strong>Сброс</strong> — в админке «Настройки → Автокэширование» или очистка каталога.</li>
+    </ul>
+
+    <h3>Почта</h3>
+    <p>Код вызывает <code>CEvent::Send('NLB_NEW_BOOKING', 's1', $fields)</code>.
+       Письмо попадает в очередь <code>b_event</code> и отправляется по расписанию.
+       Шаблон письма — «почтовое событие» в админке. Если SMTP не настроен,
+       письмо остаётся в очереди с <code>SUCCESS_EXEC = F</code> — именно это
+       происходит на стенде (блокер P0-1).</p>
+
+    <h3>Пользователи, группы, права</h3>
+    <p>Пользователь входит в группы; группы имеют права на модули и инфоблоки.
+       Администратор — группа 1, «Все пользователи» — группа 2.
+       Права на инфоблок задаются отдельно от прав на админку.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="stand">
+    <h2><span class="num">8.</span> Как устроен этот стенд</h2>
+
+    <p>На 09.11.2026 в базе: <strong>3 типа инфоблоков, 9 инфоблоков, 74 свойства</strong>.
+       Числа берутся из <code>php tools/stand-facts.php --json</code>, а не из старых отчётов.</p>
+
+    <h3>Инфоблоки</h3>
+    <div class="table-scroll"><table>
+        <thead><tr><th>Тип</th><th>Код</th><th>Название</th><th>Зачем</th></tr></thead>
+        <tbody>
+            <tr><td rowspan="6"><code>nlb_content</code></td><td><code>news</code></td><td>Новости</td><td>Лента и детальные новости</td></tr>
+            <tr><td><code>events</code></td><td>События</td><td>Афиша и детальные события</td></tr>
+            <tr><td><code>collections</code></td><td>Подарочные наборы</td><td>Наборы сувениров</td></tr>
+            <tr><td><code>requests</code></td><td>Обращения</td><td>Форма обратной связи</td></tr>
+            <tr><td><code>bookings</code></td><td>Заявки на услуги</td><td>Бронь с датой, временем и статусом</td></tr>
+            <tr><td><code>orders</code></td><td>Заказы сувениров</td><td>Заказ товара из каталога</td></tr>
+            <tr><td><code>nlb_catalog</code></td><td><code>books</code></td><td>Сувенирная продукция</td><td>Каталог товаров</td></tr>
+            <tr><td rowspan="2"><code>nlb_services</code></td><td><code>services</code></td><td>Услуги</td><td>Платформы, залы, бронирование</td></tr>
+            <tr><td><code>printing</code></td><td>Печатные услуги</td><td>Полиграфия и печать</td></tr>
+        </tbody>
+    </table></div>
+
+    <h3>Карта каталогов</h3>
+    <div class="tree">D:\bitrix doker\
+    docker-compose.yml      <i>— web :8080, db :3307, cron</i>
+    php\                    <i>— Dockerfile, php.ini, crontab</i>
+    tools\                  <i>— гейт документации, stand-facts.php</i>
+    www\                    <i>— корень сайта (внутри контейнера /var/www/html)</i>
+        bitrix\             <i>— ядро и модули; в git не входит</i>
+        local\
+            php_interface\
+                init.php            <i>— точка входа своего кода</i>
+                include\
+                    nlb_forms.php   <i>— формы, слоты, события, письма</i>
+                    nlb_push.php    <i>— Web Push (VAPID)</i>
+                    nlb_search.php  <i>— поиск</i>
+            templates\nlb_bootstrap\
+                header.php, footer.php, styles.css, script.js
+                components\bitrix\  <i>— шаблоны компонентов</i>
+        services\, news\, events\, books\, printing\, feedback\ ...
+        db\                 <i>— миграции, конфиг инфоблоков, тесты, проверки</i></code></div>
+
+    <h3>Как контент попадает в инфоблоки</h3>
+    <p>Стенд воспроизводимый: структура описана кодом, а не собрана руками в админке.</p>
+    <ul>
+        <li><code>www/db/config/iblocks.php</code> — типы, инфоблоки, свойства, права.</li>
+        <li><code>www/db/config/data/*.php</code> — элементы: новости, услуги, товары, события.</li>
+        <li><code>www/db/migrations/001…013</code> — пошаговое применение: типы → инфоблоки → свойства → разделы → элементы → меню → шаблон → заявки → сувениры → почта.</li>
+        <li><code>db/run.php</code> — запуск миграций, <code>db/check.php</code> — сверка, <code>db/lint.php</code> — синтаксис, <code>db/tests/run.php</code> — проверки.</li>
+    </ul>
+
+    <div class="note">
+        <strong>Почему так.</strong> Инфоблок, созданный руками, нельзя повторить на новом
+        стенде и сложно откатить. Миграция описывает структуру и данные кодом:
+        стенд поднимается с нуля одной командой, а расхождения ловит <code>db/check.php</code>.
+    </div>
+
+    <h3>Три формы — три инфоблока, один компонент</h3>
+    <div class="table-scroll"><table>
+        <thead><tr><th>Форма</th><th>Инфоблок</th><th>Где вызывается</th></tr></thead>
+        <tbody>
+            <tr><td>Обратная связь</td><td><code>requests</code></td><td><code>/feedback/</code> и модалка в подвале</td></tr>
+            <tr><td>Бронь услуги</td><td><code>bookings</code></td><td><code>/services/&lt;код&gt;/</code>, блок «Забронировать»</td></tr>
+            <tr><td>Заказ сувенира</td><td><code>orders</code></td><td><code>/books/&lt;код&gt;/</code></td></tr>
+        </tbody>
+    </table></div>
+    <p>Все три используют компонент <code>bitrix:iblock.element.add.form</code> с шаблоном
+       <code>bootstrap</code>. Разметку рисует общая функция <code>nlb_form_render()</code>,
+       поэтому поля и обработчики одинаковые.</p>
+</section>
+
+<!-- ============================================================ -->
+<section id="matrix">
+    <h2><span class="num">9.</span> Кто за что отвечает</h2>
+
+    <div class="table-scroll"><table>
+        <thead>
+            <tr><th>Сущность</th><th>Что это</th><th>Где живёт</th><th>Кто меняет</th><th>Пример</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Модуль</strong></td>
+                <td>Подсистема ядра с API и таблицами</td>
+                <td><code>/bitrix/modules/&lt;код&gt;</code></td>
+                <td>Вендор, обновления</td>
+                <td><code>iblock</code>, <code>main</code>, <code>search</code></td>
+            </tr>
+            <tr>
+                <td><strong>Компонент</strong></td>
+                <td>Блок страницы: логика + шаблон</td>
+                <td><code>/bitrix/components</code>, переопределение в <code>/local</code></td>
+                <td>Разработчик</td>
+                <td><code>bitrix:news.list</code></td>
+            </tr>
+            <tr>
+                <td><strong>Шаблон компонента</strong></td>
+                <td>HTML-вывод конкретного компонента</td>
+                <td><code>/local/templates/&lt;шаблон&gt;/components/...</code></td>
+                <td>Разработчик</td>
+                <td><code>nlb_cards</code>, <code>nlb_service</code></td>
+            </tr>
+            <tr>
+                <td><strong>Инфоблок</strong></td>
+                <td>Хранилище контента</td>
+                <td>MySQL + настройки в админке</td>
+                <td>Контент-менеджер, миграции</td>
+                <td><code>services</code>, <code>news</code></td>
+            </tr>
+            <tr>
+                <td><strong>Шаблон сайта</strong></td>
+                <td>Общая обёртка страниц</td>
+                <td><code>/local/templates/&lt;имя&gt;</code></td>
+                <td>Разработчик</td>
+                <td><code>nlb_bootstrap</code></td>
+            </tr>
+            <tr>
+                <td><strong>Страница</strong></td>
+                <td>Сценарий: что и в каком порядке вывести</td>
+                <td>Корень сайта</td>
+                <td>Разработчик</td>
+                <td><code>services/detail.php</code></td>
+            </tr>
+            <tr>
+                <td><strong>Событие</strong></td>
+                <td>Точка расширения ядра</td>
+                <td><code>init.php</code>, <code>include/*.php</code></td>
+                <td>Разработчик</td>
+                <td><code>OnBeforeIBlockElementAdd</code></td>
+            </tr>
+            <tr>
+                <td><strong>Агент</strong></td>
+                <td>Отложенная задача</td>
+                <td>Таблица <code>b_agent</code></td>
+                <td>Разработчик, cron</td>
+                <td>Очистка, напоминания</td>
+            </tr>
+        </tbody>
+    </table></div>
+</section>
+
+<!-- ============================================================ -->
+<section id="confusion">
+    <h2><span class="num">10.</span> Частые путаницы</h2>
+
+    <div class="grid">
+        <div class="card orange">
+            <h4>«Модуль» и «компонент»</h4>
+            <p><code>iblock</code> — модуль. <code>bitrix:news.list</code> — компонент.
+               Модуль не выводит HTML на страницу, компонент не создаёт таблиц в БД.</p>
+        </div>
+        <div class="card orange">
+            <h4>«Инфоблок» и «компонент»</h4>
+            <p>Инфоблок хранит данные, компонент их показывает. Один инфоблок могут
+               выводить десять разных компонентов и шаблонов.</p>
+        </div>
+        <div class="card orange">
+            <h4>Два вида шаблонов</h4>
+            <p>Шаблон сайта — обёртка страниц. Шаблон компонента — разметка одного блока.
+               Это разные каталоги и разные задачи.</p>
+        </div>
+        <div class="card orange">
+            <h4><code>ACTIVE = N</code> — не удалено</h4>
+            <p>Элемент лежит в БД, но скрыт. Удаление — отдельная операция.
+               Заявки на стенде создаются неактивными и ждут модерации.</p>
+        </div>
+        <div class="card orange">
+            <h4>Свойство — не поле</h4>
+            <p><code>NAME</code>, <code>CODE</code>, <code>ACTIVE</code> есть у всех элементов.
+               Цена, телефон, дата, статус — свойства конкретного инфоблока.</p>
+        </div>
+        <div class="card orange">
+            <h4><code>news.list</code> — не только новости</h4>
+            <p>Это универсальный вывод списка элементов любого инфоблока: услуг,
+               товаров, событий. Название историческое.</p>
+        </div>
+        <div class="card orange">
+            <h4>Правки в <code>/bitrix/</code></h4>
+            <p>Затрутся при обновлении ядра. Своё — в <code>/local/</code>:
+               шаблоны, обработчики, компоненты, модули.</p>
+        </div>
+        <div class="card orange">
+            <h4>«Ничего не изменилось»</h4>
+            <p>Почти всегда кэш: компонентный, инфоблока или браузера.
+               Сначала сброс кэша, потом поиск ошибки в коде.</p>
+        </div>
+        <div class="card orange">
+            <h4>Группа 2 — не админ</h4>
+            <p>Группа 1 — администраторы, группа 2 — все пользователи.
+               <code>GROUPS =&gt; [2]</code> в форме разрешает отправку гостю.</p>
+        </div>
+        <div class="card orange">
+            <h4>Почтовое событие — не письмо</h4>
+            <p>Событие — шаблон с подстановками (<code>#NAME#</code>). Письмо —
+               запись в <code>b_event</code>. Одно событие может отправить тысячи писем.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="cheatsheet">
+    <h2><span class="num">11.</span> Шпаргалка: где искать</h2>
+
+    <div class="table-scroll"><table>
+        <thead><tr><th>Вопрос</th><th>Где смотреть</th></tr></thead>
+        <tbody>
+            <tr><td>Какие модули установлены</td><td>Админка → Настройки → Модули; <code>SELECT * FROM b_module</code></td></tr>
+            <tr><td>Какие инфоблоки и свойства</td><td>Админка → Контент → Инфоблоки; <code>www/db/config/iblocks.php</code></td></tr>
+            <tr><td>Откуда взялись элементы</td><td><code>www/db/config/data/*.php</code>, миграции <code>004–005</code></td></tr>
+            <tr><td>Где шаблон блока</td><td><code>www/local/templates/nlb_bootstrap/components/bitrix/&lt;компонент&gt;/&lt;шаблон&gt;/</code></td></tr>
+            <tr><td>Где логика формы и брони</td><td><code>www/local/php_interface/include/nlb_forms.php</code></td></tr>
+            <tr><td>Где точка входа своего кода</td><td><code>www/local/php_interface/init.php</code></td></tr>
+            <tr><td>Где меню</td><td><code>.top.menu.php</code>, <code>.left.menu.php</code>, <code>www/db/menu/</code></td></tr>
+            <tr><td>Где правила URL</td><td><code>www/urlrewrite.php</code>, <code>.htaccess</code></td></tr>
+            <tr><td>Где письма</td><td>Админка → Настройки → Почтовые события; <code>b_event</code>, <code>b_event_message</code></td></tr>
+            <tr><td>Где агенты</td><td>Админка → Настройки → Агенты; <code>b_agent</code></td></tr>
+            <tr><td>Где кэш</td><td><code>www/bitrix/managed_cache/</code>, <code>www/bitrix/cache/</code></td></tr>
+            <tr><td>Проверить структуру стенда</td><td><code>php www/db/lint.php</code>, <code>php www/db/check.php</code>, <code>php www/db/tests/run.php</code></td></tr>
+            <tr><td>Числа для документации</td><td><code>php tools/stand-facts.php --json</code></td></tr>
+        </tbody>
+    </table></div>
+</section>
+
+<!-- ============================================================ -->
+<section id="dict">
+    <h2><span class="num">12.</span> Словарь</h2>
+
+    <div class="table-scroll"><table>
+        <thead><tr><th>Термин</th><th>Значение</th></tr></thead>
+        <tbody>
+            <tr><td><strong>Ядро</strong></td><td>Каталог <code>/bitrix/</code>: классы, загрузчик, админка, кэш. Обновляется вендором.</td></tr>
+            <tr><td><strong>Модуль</strong></td><td>Подсистема ядра с API, таблицами и настройками: <code>iblock</code>, <code>main</code>, <code>search</code>.</td></tr>
+            <tr><td><strong>Компонент</strong></td><td>Блок страницы с логикой и шаблоном: <code>bitrix:news.list</code>.</td></tr>
+            <tr><td><strong>Шаблон компонента</strong></td><td>Разметка вывода компонента: <code>nlb_cards</code>, <code>nlb_service</code>.</td></tr>
+            <tr><td><strong>Шаблон сайта</strong></td><td>Общая обёртка страниц: <code>header.php</code>, <code>footer.php</code>, стили.</td></tr>
+            <tr><td><strong>Инфоблок</strong></td><td>Хранилище однотипного контента со свойствами и правами.</td></tr>
+            <tr><td><strong>Тип инфоблока</strong></td><td>Группа инфоблоков с общими настройками: <code>nlb_content</code>, <code>nlb_catalog</code>, <code>nlb_services</code>.</td></tr>
+            <tr><td><strong>Элемент</strong></td><td>Одна запись инфоблока: новость, услуга, товар, бронь.</td></tr>
+            <tr><td><strong>Раздел</strong></td><td>Категория внутри инфоблока; у заявок разделов нет.</td></tr>
+            <tr><td><strong>Свойство</strong></td><td>Дополнительное поле инфоблока: цена, телефон, дата, статус.</td></tr>
+            <tr><td><strong>Список (enum)</strong></td><td>Свойство типа <code>L</code> с фиксированными значениями: статус <code>new/confirmed/cancelled</code>.</td></tr>
+            <tr><td><strong>ACTIVE</strong></td><td>Признак показа элемента: <code>Y</code> — виден, <code>N</code> — скрыт (модерация).</td></tr>
+            <tr><td><strong>CODE</strong></td><td>Символьный код для URL и поиска элемента.</td></tr>
+            <tr><td><strong>XML_ID</strong></td><td>Внешний идентификатор для миграций и повторного импорта.</td></tr>
+            <tr><td><strong>Пролог / эпилог</strong></td><td>Служебные части страницы: инициализация ядра и завершение вывода.</td></tr>
+            <tr><td><strong>Событие</strong></td><td>Точка расширения: <code>OnBeforeIBlockElementAdd</code> и подобные.</td></tr>
+            <tr><td><strong>Агент</strong></td><td>Отложенная задача в <code>b_agent</code>, выполняется по расписанию или на хитах.</td></tr>
+            <tr><td><strong>Почтовое событие</strong></td><td>Шаблон письма с подстановками; отправка — через <code>CEvent::Send</code>.</td></tr>
+            <tr><td><strong>Очередь писем</strong></td><td>Таблица <code>b_event</code>; без SMTP письма копятся с <code>SUCCESS_EXEC = F</code>.</td></tr>
+            <tr><td><strong>Кэш</strong></td><td>Сохранённый результат компонента или выборки; сбрасывается вручную или по тегам.</td></tr>
+            <tr><td><strong>HL-блок</strong></td><td>Highload-блок: лёгкая таблица для справочников, кандидат для расписания услуг.</td></tr>
+            <tr><td><strong>Миграция</strong></td><td>PHP-скрипт стенда, который создаёт структуру и данные инфоблоков кодом.</td></tr>
+        </tbody>
+    </table></div>
+</section>
+
+<footer class="page">
+    <p>Стенд «Библиотека 2026» · Битрикс 26.150.0 · шаблон nlb_bootstrap · обновлено 09.11.2026</p>
+    <p>Числа и пути сверяются с кодом: <code>php tools/stand-facts.php --json</code>,
+       <code>php www/db/check.php</code>.</p>
+</footer>
+
+</div>
+</body>
+</html>
